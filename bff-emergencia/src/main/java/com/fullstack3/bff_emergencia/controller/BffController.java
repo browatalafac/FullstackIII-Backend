@@ -1,0 +1,30 @@
+package com.fullstack3.bff_emergencia.controller;
+
+import com.fullstack3.bff_emergencia.dto.ReporteRequestDTO;
+import com.fullstack3.bff_emergencia.dto.ReporteResponseDTO;
+import com.fullstack3.bff_emergencia.dto.UsuarioRequestDTO;
+import com.fullstack3.bff_emergencia.dto.UsuarioResponseDTO;
+import com.fullstack3.bff_emergencia.service.EmergenciaOrchestratorService;
+import lombok.AllArgsConstructor;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+@AllArgsConstructor
+@RestController
+@RequestMapping("/api/bff/emergencias")
+public class BffController {
+
+    private EmergenciaOrchestratorService orchestrator; //Ponerlo final cuando los controladres, con sus servicios esten listos
+
+    @PostMapping("/reportar")
+    public ReporteResponseDTO crearReporte(@RequestBody ReporteRequestDTO request) {
+        return orchestrator.procesarReporte(request);
+    }
+
+    @PostMapping("/usuarios")
+    public UsuarioResponseDTO crearUsuario(@RequestBody UsuarioRequestDTO request) {
+        return orchestrator.registrarUsuario(request);
+    }
+}
