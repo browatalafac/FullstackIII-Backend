@@ -3,6 +3,7 @@ package com.fullstack.usuario_service.controller;
 import com.fullstack.usuario_service.dto.UsuarioRequestDTO;
 import com.fullstack.usuario_service.dto.UsuarioResponseDTO;
 import com.fullstack.usuario_service.service.UsuarioService;
+import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -10,9 +11,9 @@ import java.util.List;
 
 @RequestMapping("/api/v1/usuarios")
 @RestController
+@AllArgsConstructor
 public class UsuarioController {
 
-    @Autowired
     private UsuarioService usuarioService;
 
     @GetMapping
