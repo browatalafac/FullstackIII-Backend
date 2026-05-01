@@ -4,6 +4,7 @@ import com.fullstack.usuario_service.dto.UsuarioRequestDTO;
 import com.fullstack.usuario_service.dto.UsuarioResponseDTO;
 import com.fullstack.usuario_service.model.Usuario;
 import com.fullstack.usuario_service.repository.UsuarioRepository;
+import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -11,9 +12,9 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
+@AllArgsConstructor
 public class UsuarioService {
 
-    @Autowired
     private UsuarioRepository usuarioRepository;
 
     //Devuelve una lista de los usuarios dto
