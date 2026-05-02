@@ -3,6 +3,7 @@ package com.fullstack.reporte_service.service;
 import com.fullstack.reporte_service.dto.ReporteRequestDTO;
 import com.fullstack.reporte_service.dto.ReporteResponseDTO;
 import com.fullstack.reporte_service.enums.EstadoReporte;
+import com.fullstack.reporte_service.factory.ReporteHandlerFactory;
 import com.fullstack.reporte_service.handler.ReporteHandler;
 import com.fullstack.reporte_service.model.Reporte;
 import com.fullstack.reporte_service.repository.ReporteRepository;
