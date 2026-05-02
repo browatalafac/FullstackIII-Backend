@@ -30,6 +30,15 @@ public final class ReporteService {
                 .collect(Collectors.toList());
     }
 
+    public ReporteResponseDTO obtenerPorId(Long id) {
+        Reporte reporte = reportesRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Reporte no encontrado con id: " + id));
+
+        return mapearAResponseDTO(reporte);
+    }
+
+
+
     public ReporteResponseDTO guardarReporte(ReporteRequestDTO requestDTO) {
         if (requestDTO.getAnonimo() == null) {
             throw new RuntimeException("El campo anonimo es obligatorio");
