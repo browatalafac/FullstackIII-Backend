@@ -5,6 +5,7 @@ import com.fullstack3.bff_emergencia.dto.ReporteResponseDTO;
 import com.fullstack3.bff_emergencia.dto.UsuarioRequestDTO;
 import com.fullstack3.bff_emergencia.dto.UsuarioResponseDTO;
 import com.fullstack3.bff_emergencia.service.EmergenciaOrchestratorService;
+import com.fullstack3.bff_emergencia.service.ResilienteClientService;
 import lombok.AllArgsConstructor;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -17,6 +18,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class BffController {
 
     private EmergenciaOrchestratorService orchestrator; //Ponerlo final cuando los controladres, con sus servicios esten listos
+    private final ResilienteClientService resilienteService;
 
     @PostMapping("/reportar")
     public ReporteResponseDTO crearReporte(@RequestBody ReporteRequestDTO request) {
