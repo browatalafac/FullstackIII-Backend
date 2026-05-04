@@ -14,7 +14,7 @@ import java.util.List;
 @AllArgsConstructor
 public class UsuarioController {
 
-    private UsuarioService usuarioService;
+    private final UsuarioService usuarioService;
 
     @GetMapping
     public List<UsuarioResponseDTO> getAllUsuarios(){

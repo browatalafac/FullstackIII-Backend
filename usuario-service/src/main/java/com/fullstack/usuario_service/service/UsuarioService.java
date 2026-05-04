@@ -15,7 +15,7 @@ import java.util.stream.Collectors;
 @AllArgsConstructor
 public class UsuarioService {
 
-    private UsuarioRepository usuarioRepository;
+    private final UsuarioRepository usuarioRepository;
 
     //Devuelve una lista de los usuarios dto
     public List<UsuarioResponseDTO> obtenerTodos() {

@@ -17,9 +17,9 @@ import java.util.stream.Collectors;
 @Service
 public final class ReporteService {
 
-    private ReporteRepository reportesRepository;
+    private final ReporteRepository reportesRepository;
 
-    private ReporteHandlerFactory factory;
+    private final ReporteHandlerFactory factory;
 
     // 1. Obtener todos los reportes convertidos a DTO
     public List<ReporteResponseDTO> obtenerTodos(){

@@ -13,7 +13,7 @@ import java.util.List;
 @RestController
 public final class ReporteController {
 
-    private ReporteService reportesService;
+    private final ReporteService reportesService;
 
     @GetMapping
     public List<ReporteResponseDTO> getAllReportes(){
