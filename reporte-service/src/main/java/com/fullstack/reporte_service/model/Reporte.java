@@ -39,7 +39,7 @@ public class Reporte {
     @Enumerated(EnumType.STRING)
     private EstadoReporte estado;
 
-    private Long usuarioId;
+    private Long usuarioId; //no se ocupa, despues ver como quitarlo, por ahora dejarlo
     private String runCiudadano;
     private Boolean anonimo;
 

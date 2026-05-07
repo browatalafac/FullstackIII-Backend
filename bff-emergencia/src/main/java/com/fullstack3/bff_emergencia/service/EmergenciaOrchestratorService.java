@@ -13,49 +13,48 @@ import org.springframework.stereotype.Service;
 @Service
 public class EmergenciaOrchestratorService {
 
-    private  UsuarioClient usuarioClient; //Ponerlo final despues de agregar los controladores que faltan
-
-    private ReporteClient reporteClient; //Ponerlo final despues de agregar los controladores que faltan
+    private UsuarioClient usuarioClient;
+    private ReporteClient reporteClient;
 
     public ReporteResponseDTO procesarReporte(ReporteRequestDTO request) {
 
-        // Validaciones básicas
         if (request.getAnonimo() == null) {
             throw new RuntimeException("El campo anonimo es obligatorio");
         }
 
-        if (request.getLatitud() == null) {
-            throw new RuntimeException("La latitud es obligatoria");
+        if (request.getLatitud() == null ||
+                request.getLongitud() == null ||
+                request.getDescripcion() == null ||
+                request.getTipoIncendio() == null) {
+            throw new RuntimeException("Faltan campos obligatorios");
         }
 
-        if (request.getLongitud() == null) {
-            throw new RuntimeException("La longitud es obligatoria");
-        }
-
-        if (request.getDescripcion() == null ) {
-            throw new RuntimeException("La descripcion es obligatoria");
-        }
-
-        if (request.getTipoIncendio() == null) {
-            throw new RuntimeException("El tipoIncendio es obligatorio");
-        }
-
-        // Si no es anónimo, debe venir usuarioId
+        // 🔵 SI NO ES ANÓNIMO → validas RUN y CREAS EL USUARIO
         if (!request.getAnonimo()) {
-            if (request.getUsuarioId() == null) {
-                throw new RuntimeException("usuarioId es obligatorio cuando anonimo = false");
+
+            if (request.getRunCiudadano() == null || request.getRunCiudadano().isBlank()) {
+                throw new RuntimeException("run obligatorio si no es anonimo");
             }
 
-            UsuarioResponseDTO usuario = usuarioClient.obtenerPorId(request.getUsuarioId());
+            // -------- CÓDIGO NUEVO AÑADIDO --------
+            try {
+                // Armamos el DTO para el microservicio de usuarios
+                UsuarioRequestDTO nuevoUsuario = new UsuarioRequestDTO();
+                nuevoUsuario.setRun(request.getRunCiudadano());
+                nuevoUsuario.setRol("CIUDADANO"); // Tu servicio de usuario exige un rol obligatorio
 
-            if (usuario == null) {
-                throw new RuntimeException("No existe el usuario con ID " + request.getUsuarioId());
+                // Llamamos al método que ya tienes para registrarlo
+                this.registrarUsuario(nuevoUsuario);
+
+            } catch (Exception e) {
+                // Manejo de errores: Si el RUN ya existe en la base de datos,
+                // el microservicio de usuarios podría arrojar un error.
+                // Aquí puedes decidir si frenar el reporte o dejar que continúe.
+                System.out.println("Nota: El usuario ya existe o hubo un error al crearlo - " + e.getMessage());
             }
+            // --------------------------------------
 
-            request.setRunCiudadano(usuario.getRun());
         } else {
-            // Si es anónimo, limpiamos datos de usuario
-            request.setUsuarioId(null);
             request.setRunCiudadano(null);
         }
 
@@ -74,5 +73,4 @@ public class EmergenciaOrchestratorService {
 
         return usuarioClient.crearUsuario(request);
     }
-
 }
