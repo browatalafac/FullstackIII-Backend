@@ -16,7 +16,7 @@ public class ReporteRequestDTO implements ReporteBaseDTO {
     private TipoIncendio tipoIncendio;
 
     // Identificación (todos pueden ser opcionales dependiendo del caso)
-    private Long usuarioId;
+    private Long usuarioId; //no se ocupa realmente
     private String runCiudadano;
     private Boolean anonimo;
 }

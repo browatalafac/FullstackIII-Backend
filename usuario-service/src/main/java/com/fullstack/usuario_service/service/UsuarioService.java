@@ -5,7 +5,6 @@ import com.fullstack.usuario_service.dto.UsuarioResponseDTO;
 import com.fullstack.usuario_service.model.Usuario;
 import com.fullstack.usuario_service.repository.UsuarioRepository;
 import lombok.AllArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -17,7 +16,7 @@ public class UsuarioService {
 
     private final UsuarioRepository usuarioRepository;
 
-    //Devuelve una lista de los usuarios dto
+    // Devuelve una lista de los usuarios dto
     public List<UsuarioResponseDTO> obtenerTodos() {
         List<Usuario> usuarios = usuarioRepository.findAll();
 
@@ -45,6 +44,16 @@ public class UsuarioService {
             throw new RuntimeException("El rol es obligatorio");
         }
 
+        // Buscamos si el RUN ya existe en la BD
+        var usuarioExistente = usuarioRepository.findByRun(requestDTO.getRun());
+
+        if (usuarioExistente.isPresent()) {
+            // Si el usuario ya existe, NO lanzamos error.
+            // Simplemente devolvemos el usuario que ya está guardado.
+            return mapearAResponseDTO(usuarioExistente.get());
+        }
+
+        // Si no existe, se creanormalmente
         Usuario nuevoUsuario = new Usuario();
         nuevoUsuario.setRun(requestDTO.getRun());
         nuevoUsuario.setRol(requestDTO.getRol());
