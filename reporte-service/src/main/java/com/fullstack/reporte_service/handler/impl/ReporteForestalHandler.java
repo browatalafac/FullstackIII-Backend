@@ -1,8 +1,10 @@
 package com.fullstack.reporte_service.handler.impl;
 
+import com.fullstack.reporte_service.dto.ReporteBaseDTO;
 import com.fullstack.reporte_service.dto.ReporteRequestDTO;
 import com.fullstack.reporte_service.enums.EquipoAsignado;
 import com.fullstack.reporte_service.enums.NivelPrioridad;
+import com.fullstack.reporte_service.enums.TipoIncendio;
 import com.fullstack.reporte_service.handler.ReporteHandler;
 import com.fullstack.reporte_service.model.Reporte;
 import org.springframework.stereotype.Component;
@@ -10,7 +12,7 @@ import org.springframework.stereotype.Component;
 @Component
 public class ReporteForestalHandler implements ReporteHandler {
     @Override
-    public void procesarSegunTipo(Reporte reporte, ReporteRequestDTO requestDTO) {
+    public void procesarSegunTipo(Reporte reporte, ReporteBaseDTO dto) {
         // Lógica específica para incendios forestales
         reporte.setNivelPrioridad(NivelPrioridad.ALTA);
         reporte.setRadioImpacto(5000); // 5km de radio
@@ -18,7 +20,7 @@ public class ReporteForestalHandler implements ReporteHandler {
     }
 
     @Override
-    public String getTipoIncendioSoportado() {
-        return "FORESTAL";
+    public TipoIncendio getTipoIncendioSoportado() {
+        return TipoIncendio.FORESTAL;
     }
 }

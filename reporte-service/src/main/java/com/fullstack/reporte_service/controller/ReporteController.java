@@ -2,6 +2,7 @@ package com.fullstack.reporte_service.controller;
 
 import com.fullstack.reporte_service.dto.ReporteRequestDTO;
 import com.fullstack.reporte_service.dto.ReporteResponseDTO;
+import com.fullstack.reporte_service.dto.ReporteUpdateDTO;
 import com.fullstack.reporte_service.service.ReporteService;
 import lombok.AllArgsConstructor;
 import org.springframework.web.bind.annotation.*;
@@ -27,5 +28,13 @@ public final class ReporteController {
     public ReporteResponseDTO saveReporte(@RequestBody ReporteRequestDTO requestDTO){
         return reportesService.guardarReporte(requestDTO);
     }
+    @PutMapping("/{id}")
+    public ReporteResponseDTO actualizarReporte(
+            @PathVariable Long id,
+            @RequestBody ReporteUpdateDTO updateDTO) {
+
+        return reportesService.actualizarReporte(id, updateDTO);
+    }
+
 
 }

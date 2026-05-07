@@ -2,7 +2,9 @@ package com.fullstack.reporte_service.service;
 
 import com.fullstack.reporte_service.dto.ReporteRequestDTO;
 import com.fullstack.reporte_service.dto.ReporteResponseDTO;
+import com.fullstack.reporte_service.dto.ReporteUpdateDTO;
 import com.fullstack.reporte_service.enums.EstadoReporte;
+import com.fullstack.reporte_service.enums.TipoIncendio;
 import com.fullstack.reporte_service.factory.ReporteHandlerFactory;
 import com.fullstack.reporte_service.handler.ReporteHandler;
 import com.fullstack.reporte_service.model.Reporte;
@@ -15,13 +17,13 @@ import java.util.stream.Collectors;
 
 @AllArgsConstructor
 @Service
-public final class ReporteService {
+public class ReporteService {
 
     private final ReporteRepository reportesRepository;
 
     private final ReporteHandlerFactory factory;
 
-    // 1. Obtener todos los reportes convertidos a DTO
+    // Obtener todos los reportes convertidos a DTO
     public List<ReporteResponseDTO> obtenerTodos(){
         List<Reporte> reportes = reportesRepository.findAll();
 
@@ -30,6 +32,7 @@ public final class ReporteService {
                 .collect(Collectors.toList());
     }
 
+    //Obtiene un reporte por su id
     public ReporteResponseDTO obtenerPorId(Long id) {
         Reporte reporte = reportesRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Reporte no encontrado con id: " + id));
@@ -38,7 +41,7 @@ public final class ReporteService {
     }
 
 
-
+    //Guardar reporte
     public ReporteResponseDTO guardarReporte(ReporteRequestDTO requestDTO) {
         if (requestDTO.getAnonimo() == null) {
             throw new RuntimeException("El campo anonimo es obligatorio");
@@ -52,6 +55,9 @@ public final class ReporteService {
                 throw new RuntimeException("Si no es anónimo, debes enviar usuarioId o runCiudadano");
             }
         }
+
+
+
 
         Reporte reporte = new Reporte();
         reporte.setLatitud(requestDTO.getLatitud());
@@ -70,6 +76,34 @@ public final class ReporteService {
 
         Reporte reporteGuardado = reportesRepository.save(reporte);
         return mapearAResponseDTO(reporteGuardado);
+    }
+
+
+    public ReporteResponseDTO actualizarReporte(Long id, ReporteUpdateDTO updateDTO) {
+        Reporte reporte = reportesRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Reporte no encontrado con id: " + id));
+
+        // SOLO actualizar lo permitido
+
+        if (updateDTO.getDescripcion() != null && !updateDTO.getDescripcion().isBlank()) {
+            reporte.setDescripcion(updateDTO.getDescripcion());
+        }
+
+        if (updateDTO.getTipoIncendio() != null) {
+            reporte.setTipoIncendio(updateDTO.getTipoIncendio());
+        }
+
+        if (updateDTO.getEstado() != null) {
+            reporte.setEstado(updateDTO.getEstado());
+        }
+
+
+        // Si el tipo cambió, reprocesar con handler
+        ReporteHandler handler = factory.getHandler(reporte.getTipoIncendio());
+        handler.procesarSegunTipo(reporte, updateDTO);
+
+        Reporte actualizado = reportesRepository.save(reporte);
+        return mapearAResponseDTO(actualizado);
     }
 
 
