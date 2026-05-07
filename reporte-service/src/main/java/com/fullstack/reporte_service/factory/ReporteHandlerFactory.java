@@ -1,5 +1,6 @@
 package com.fullstack.reporte_service.factory;
 
+import com.fullstack.reporte_service.enums.TipoIncendio;
 import com.fullstack.reporte_service.handler.ReporteHandler;
 import com.fullstack.reporte_service.handler.impl.ReporteForestalHandler;
 import com.fullstack.reporte_service.handler.impl.ReporteUrbanoHandler;
@@ -11,7 +12,7 @@ import java.util.Map;
 @Component
 public class ReporteHandlerFactory {
 
-    private final Map<String, ReporteHandler> handlers = new HashMap<>();
+    private final Map<TipoIncendio, ReporteHandler> handlers = new HashMap<>();
     private final ReporteHandler defaultHandler;
 
     /**
@@ -28,11 +29,11 @@ public class ReporteHandlerFactory {
         this.defaultHandler = reporteForestalHandler;
     }
 
-    public ReporteHandler getHandler(String tipoIncendio) {
+    public ReporteHandler getHandler(TipoIncendio tipoIncendio) {
         if (tipoIncendio == null) {
             return defaultHandler;
         }
-        return handlers.getOrDefault(tipoIncendio.trim().toUpperCase(), defaultHandler);
+        return handlers.getOrDefault(tipoIncendio, defaultHandler);
     }
 
 }

@@ -32,11 +32,11 @@ public class EmergenciaOrchestratorService {
             throw new RuntimeException("La longitud es obligatoria");
         }
 
-        if (request.getDescripcion() == null || request.getDescripcion().isBlank()) {
+        if (request.getDescripcion() == null ) {
             throw new RuntimeException("La descripcion es obligatoria");
         }
 
-        if (request.getTipoIncendio() == null || request.getTipoIncendio().isBlank()) {
+        if (request.getTipoIncendio() == null) {
             throw new RuntimeException("El tipoIncendio es obligatorio");
         }
 

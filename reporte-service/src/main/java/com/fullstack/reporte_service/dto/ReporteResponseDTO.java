@@ -3,6 +3,7 @@ package com.fullstack.reporte_service.dto;
 import com.fullstack.reporte_service.enums.EquipoAsignado;
 import com.fullstack.reporte_service.enums.EstadoReporte;
 import com.fullstack.reporte_service.enums.NivelPrioridad;
+import com.fullstack.reporte_service.enums.TipoIncendio;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -17,7 +18,7 @@ public class ReporteResponseDTO {
     private Double latitud;
     private Double longitud;
     private String descripcion;
-    private String tipoIncendio;
+    private TipoIncendio tipoIncendio;
     private EstadoReporte estado;
     private String runCiudadano; // Opcional, para que confirme que quedó a su run
 

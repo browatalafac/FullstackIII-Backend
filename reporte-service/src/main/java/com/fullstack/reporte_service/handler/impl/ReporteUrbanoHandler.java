@@ -1,8 +1,10 @@
 package com.fullstack.reporte_service.handler.impl;
 
+import com.fullstack.reporte_service.dto.ReporteBaseDTO;
 import com.fullstack.reporte_service.dto.ReporteRequestDTO;
 import com.fullstack.reporte_service.enums.EquipoAsignado;
 import com.fullstack.reporte_service.enums.NivelPrioridad;
+import com.fullstack.reporte_service.enums.TipoIncendio;
 import com.fullstack.reporte_service.handler.ReporteHandler;
 import com.fullstack.reporte_service.model.Reporte;
 import org.springframework.stereotype.Component;
@@ -10,7 +12,7 @@ import org.springframework.stereotype.Component;
 @Component
 public class ReporteUrbanoHandler implements ReporteHandler {
     @Override
-    public void procesarSegunTipo(Reporte reporte, ReporteRequestDTO requestDTO) {
+    public void procesarSegunTipo(Reporte reporte, ReporteBaseDTO dto) {
 
         reporte.setNivelPrioridad(NivelPrioridad.MEDIA);
         reporte.setRadioImpacto(1000); // 1km de radio, por ahora dejemoslo estaticos, despues se pueden añadir mas
@@ -19,7 +21,7 @@ public class ReporteUrbanoHandler implements ReporteHandler {
 
     }
     @Override
-    public String getTipoIncendioSoportado() {
-        return "URBANO";
+    public TipoIncendio getTipoIncendioSoportado() {
+        return TipoIncendio.URBANO;
     }
 }
