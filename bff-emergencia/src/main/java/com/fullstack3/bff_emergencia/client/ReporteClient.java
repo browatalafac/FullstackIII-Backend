@@ -12,6 +12,9 @@ public interface ReporteClient {
     @PostMapping
     ReporteResponseDTO guardarReporte(@RequestBody ReporteRequestDTO request);
 
+    @GetMapping("/seguimiento/{codigo}")
+    ReporteResponseDTO getByCodigo(@PathVariable("codigo") String codigo);
+
     @GetMapping("/{id}")
     ReporteResponseDTO getById(@PathVariable("id") Long id);
 

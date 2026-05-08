@@ -24,6 +24,11 @@ public final class ReporteController {
     @GetMapping("/{id}")
     public ReporteResponseDTO getById(@PathVariable Long id) { return reportesService.obtenerPorId(id); }
 
+    @GetMapping("/seguimiento/{codigo}")
+    public ReporteResponseDTO getByCodigo(@PathVariable String codigo) {
+        return reportesService.obtenerPorCodigo(codigo);
+    }
+
     @PostMapping
     public ReporteResponseDTO saveReporte(@RequestBody ReporteRequestDTO requestDTO){
         return reportesService.guardarReporte(requestDTO);

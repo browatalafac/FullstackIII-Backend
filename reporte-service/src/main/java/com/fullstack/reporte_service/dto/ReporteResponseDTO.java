@@ -14,6 +14,7 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 public class ReporteResponseDTO {
     private Long id;
+    private String codigoSeguimiento;
     private LocalDateTime fechaReporte;
     private Double latitud;
     private Double longitud;

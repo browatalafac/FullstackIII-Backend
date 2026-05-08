@@ -12,6 +12,7 @@ import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import java.time.LocalDateTime;
+import java.util.UUID;
 
 @Entity
 @Data
@@ -23,6 +24,9 @@ public class Reporte {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
+    @Column(unique = true, nullable = false, updatable = false)
+    private String codigoSeguimiento;
 
     @CreatedDate
     private LocalDateTime fechaReporte;
@@ -39,8 +43,6 @@ public class Reporte {
     @Enumerated(EnumType.STRING)
     private EstadoReporte estado;
 
-    // ELIMINADOS: usuarioId, runCiudadano, anonimo
-
     @Enumerated(EnumType.STRING)
     private NivelPrioridad nivelPrioridad;
 
@@ -48,5 +50,15 @@ public class Reporte {
 
     @Enumerated(EnumType.STRING)
     private EquipoAsignado equipoAsignado;
+
+    // 🔴 NUEVO: Se ejecuta automáticamente antes del primer save()
+    @PrePersist
+    public void generarCodigoSeguimiento() {
+        if (this.codigoSeguimiento == null) {
+            // Genera un código amigable para el ciudadano, ej: "REP-4F3A8B12"
+            String uuidCoroto = UUID.randomUUID().toString().substring(0, 8).toUpperCase();
+            this.codigoSeguimiento = "REP-" + uuidCoroto;
+        }
+    }
 
 }

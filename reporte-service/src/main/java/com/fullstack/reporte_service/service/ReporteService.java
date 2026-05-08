@@ -35,6 +35,14 @@ public class ReporteService {
         return mapearAResponseDTO(reporte);
     }
 
+
+    public ReporteResponseDTO obtenerPorCodigo(String codigo) {
+        Reporte reporte = reportesRepository.findByCodigoSeguimiento(codigo)
+                .orElseThrow(() -> new RuntimeException("No se encontró ningún reporte con ese código."));
+        return mapearAResponseDTO(reporte);
+    }
+
+
     // MÉTODO GUARDAR DRÁSTICAMENTE SIMPLIFICADO
     public ReporteResponseDTO guardarReporte(ReporteRequestDTO requestDTO) {
 
@@ -79,14 +87,13 @@ public class ReporteService {
     private ReporteResponseDTO mapearAResponseDTO(Reporte reporte) {
         ReporteResponseDTO responseDTO = new ReporteResponseDTO();
         responseDTO.setId(reporte.getId());
+        responseDTO.setCodigoSeguimiento(reporte.getCodigoSeguimiento());
         responseDTO.setFechaReporte(reporte.getFechaReporte());
         responseDTO.setLatitud(reporte.getLatitud());
         responseDTO.setLongitud(reporte.getLongitud());
         responseDTO.setDescripcion(reporte.getDescripcion());
         responseDTO.setTipoIncendio(reporte.getTipoIncendio());
         responseDTO.setEstado(reporte.getEstado());
-
-        // ELIMINADO: responseDTO.setRunCiudadano(reporte.getRunCiudadano());
 
         responseDTO.setNivelPrioridad(reporte.getNivelPrioridad());
         responseDTO.setRadioImpacto(reporte.getRadioImpacto());
