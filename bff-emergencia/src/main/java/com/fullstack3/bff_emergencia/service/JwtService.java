@@ -33,4 +33,27 @@ public class JwtService {
                 .signWith(getSignKey(), SignatureAlgorithm.HS256)
                 .compact();
     }
+    // Extraer el email (subject) del token
+    public String extraerEmail(String token) {
+        return Jwts.parserBuilder()
+                .setSigningKey(getSignKey())
+                .build()
+                .parseClaimsJws(token)
+                .getBody()
+                .getSubject();
+    }
+
+    // Validar que el token no haya sido alterado ni esté expirado
+    public boolean validarToken(String token) {
+        try {
+            Jwts.parserBuilder()
+                    .setSigningKey(getSignKey())
+                    .build()
+                    .parseClaimsJws(token);
+            return true;
+        } catch (Exception e) {
+            System.out.println("Token inválido o expirado: " + e.getMessage());
+            return false;
+        }
+    }
 }

@@ -4,10 +4,9 @@ import com.fullstack3.bff_emergencia.dto.*;
 import com.fullstack3.bff_emergencia.service.EmergenciaOrchestratorService;
 import com.fullstack3.bff_emergencia.service.ResilienteClientService;
 import lombok.AllArgsConstructor;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @AllArgsConstructor
 @RestController
@@ -22,8 +21,21 @@ public class BffController {
         return orchestrator.procesarReporte(request);
     }
 
+    @GetMapping("/reportes")
+    public List<ReporteResponseDTO> verTodosLosReportes() {
+        return orchestrator.obtenerTodosLosReportes();
+    }
+
     @PostMapping("/login")
     public AuthResponseDTO login(@RequestBody UsuarioRequestDTO request) {
         return orchestrator.loginFuncionario(request);
     }
+
+    @PostMapping("/funcionarios")
+    public UsuarioResponseDTO crearFuncionario(@RequestBody UsuarioRequestDTO request) {
+        // OJO: Más adelante, este endpoint deberá exigir que la petición traiga un JWT válido
+        // en los Headers para asegurar que solo un funcionario activo pueda crear a otro.
+        return orchestrator.registrarNuevoFuncionario(request);
+    }
+
 }

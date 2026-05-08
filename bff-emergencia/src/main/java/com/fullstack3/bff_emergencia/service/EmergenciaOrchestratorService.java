@@ -10,6 +10,8 @@ import com.fullstack3.bff_emergencia.dto.UsuarioResponseDTO;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @AllArgsConstructor
 @Service
 public class EmergenciaOrchestratorService {
@@ -32,6 +34,17 @@ public class EmergenciaOrchestratorService {
         // Simplemente tomamos los datos geográficos y descriptivos y los enviamos.
         return reporteClient.guardarReporte(request);
     }
+
+    public List<ReporteResponseDTO> obtenerTodosLosReportes() {
+        return reporteClient.getAllReportes();
+    }
+
+    public UsuarioResponseDTO registrarNuevoFuncionario(UsuarioRequestDTO request) {
+        // Aquí podrías agregar lógica extra de validación en el BFF si quisieras
+        return usuarioClient.crearFuncionarioAdmin(request);
+    }
+
+
 
     // 2. LOGIN DE FUNCIONARIO
     public AuthResponseDTO loginFuncionario(UsuarioRequestDTO request) {

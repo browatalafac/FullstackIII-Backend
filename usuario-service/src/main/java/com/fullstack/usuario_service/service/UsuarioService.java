@@ -1,4 +1,5 @@
 package com.fullstack.usuario_service.service;
+import com.fullstack.usuario_service.enums.Roles;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import com.fullstack.usuario_service.dto.UsuarioRequestDTO;
 import com.fullstack.usuario_service.dto.UsuarioResponseDTO;
@@ -8,6 +9,7 @@ import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -40,10 +42,39 @@ public class UsuarioService {
         return mapearAResponseDTO(usuario);
     }
 
-    // ELIMINAMOS crearUsuario:
-    // Como los funcionarios ya están en la base de datos, no necesitamos un endpoint
-    // público para registrarlos. Si necesitas crear nuevos en el futuro,
-    // harías un método exclusivo para administradores.
+
+    public UsuarioResponseDTO crearFuncionario(UsuarioRequestDTO requestDTO) {
+        if (requestDTO.getEmail() == null || requestDTO.getEmail().isBlank()) {
+            throw new RuntimeException("El email es obligatorio");
+        }
+        if (requestDTO.getPassword() == null || requestDTO.getPassword().isBlank()) {
+            throw new RuntimeException("La contraseña es obligatoria");
+        }
+
+        // Verificamos que el correo no esté en uso
+        Optional<Usuario> existente = usuarioRepository.findByEmail(requestDTO.getEmail());
+        if (existente.isPresent()) {
+            throw new RuntimeException("El correo ya está registrado");
+        }
+
+        Usuario nuevoFuncionario = new Usuario();
+        nuevoFuncionario.setEmail(requestDTO.getEmail());
+
+        // Encriptamos la contraseña antes de guardarla
+        BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
+        nuevoFuncionario.setPassword(encoder.encode(requestDTO.getPassword()));
+
+        // Si tu requestDTO tiene un rol, lo usas. Si no, le asignas FUNCIONARIO por defecto.
+        // nuevoFuncionario.setRol(requestDTO.getRol() != null ? requestDTO.getRol() : Roles.FUNCIONARIO);
+        nuevoFuncionario.setRol(Roles.ADMINISTRADOR_SISTEMA);
+
+        Usuario guardado = usuarioRepository.save(nuevoFuncionario);
+
+        return mapearAResponseDTO(guardado);
+    }
+
+
+
 
     // Método auxiliar privado (Nota que el DTO ya no tiene RUN, tiene Email)
     private UsuarioResponseDTO mapearAResponseDTO(Usuario usuario) {
