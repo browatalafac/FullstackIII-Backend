@@ -56,4 +56,14 @@ public class JwtService {
             return false;
         }
     }
+
+    public String extraerRol(String token) {
+        return Jwts.parserBuilder()
+                .setSigningKey(getSignKey())
+                .build()
+                .parseClaimsJws(token)
+                .getBody()
+                .get("rol", String.class); // Extraemos el rol que guardamos en los claims
+    }
+
 }

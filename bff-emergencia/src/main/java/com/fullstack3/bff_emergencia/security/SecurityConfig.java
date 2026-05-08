@@ -3,6 +3,7 @@ package com.fullstack3.bff_emergencia.security;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
@@ -34,7 +35,19 @@ public class SecurityConfig {
                         .requestMatchers("/api/bff/emergencias/login").permitAll()
                         .requestMatchers("/api/bff/emergencias/seguimiento/**").permitAll() // Por si hiciste el endpoint de seguimiento
 
-                        // 🔴 RUTAS PROTEGIDAS (Cualquier otra ruta pide token)
+                        // 🔴 RUTAS PROTEGIDAS POR ROL
+                        // Cualquier usuario autenticado (Admin, Muni, Brigadista) puede hacer GET para ver la lista
+                        .requestMatchers(HttpMethod.GET, "/api/bff/emergencias/reportes").authenticated()
+
+                        // 🔴 SOLO EL BRIGADISTA puede hacer un PUT para editar un reporte
+                        .requestMatchers(HttpMethod.PUT, "/api/bff/emergencias/reportes/**").hasAuthority("BRIGADISTA")
+
+                        // Si después haces un endpoint para crear usuarios, solo el Admin podría
+                        // .requestMatchers(HttpMethod.POST, "/api/bff/emergencias/funcionarios").hasAuthority("ADMINISTRADOR_SISTEMA")
+                        //Esto aun que no se implemente aun.
+
+
+                        // Cualquier otra ruta que se te olvide, por defecto pedirá token
                         .anyRequest().authenticated()
                 )
 

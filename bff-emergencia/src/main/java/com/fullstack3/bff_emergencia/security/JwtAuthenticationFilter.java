@@ -7,6 +7,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.stereotype.Component;
@@ -14,6 +15,7 @@ import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collections;
 
 @Component
 @RequiredArgsConstructor
@@ -48,10 +50,19 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                 // Verificamos si el token es válido matemáticamente y no ha expirado
                 if (jwtService.validarToken(jwt)) {
                     // Creamos el objeto de autenticación de Spring Security
+
+
+                    // 🔴 NUEVO: Extraemos el rol del token usando tu nuevo método
+                    String rol = jwtService.extraerRol(jwt);
+
+                    // 🔴 NUEVO: Convertimos ese rol en una Autoridad que Spring Security entiende
+                    var authorities = Collections.singletonList(new SimpleGrantedAuthority(rol));
+
+                    // 🔴 ACTUALIZADO: Pasamos la variable 'authorities' en lugar de la lista vacía
                     UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(
                             userEmail,
                             null,
-                            new ArrayList<>() // Aquí podríamos pasar los roles si los extraemos del token
+                            authorities
                     );
                     authToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
 
