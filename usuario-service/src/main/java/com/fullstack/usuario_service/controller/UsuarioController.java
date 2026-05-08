@@ -33,4 +33,13 @@ public class UsuarioController {
     }
 
 
+
+    @PostMapping("/admin/crear")
+    public UsuarioResponseDTO crearFuncionario(@RequestBody UsuarioRequestDTO requestDTO) {
+        return usuarioService.crearFuncionario(requestDTO);
+    }
+
+
+
+
 }

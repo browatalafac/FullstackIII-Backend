@@ -17,7 +17,11 @@ public interface UsuarioClient {
 
     @PostMapping("/login")
     UsuarioResponseDTO login(@RequestBody UsuarioRequestDTO request);
+
     @GetMapping
     List<UsuarioResponseDTO> getAllUsuarios();
+
+    @PostMapping("/admin/crear")
+    UsuarioResponseDTO crearFuncionarioAdmin(@RequestBody UsuarioRequestDTO request);
 
 }
