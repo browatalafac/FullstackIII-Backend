@@ -1,5 +1,5 @@
 package com.fullstack.usuario_service.service;
-
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import com.fullstack.usuario_service.dto.UsuarioRequestDTO;
 import com.fullstack.usuario_service.dto.UsuarioResponseDTO;
 import com.fullstack.usuario_service.model.Usuario;
@@ -16,58 +16,57 @@ public class UsuarioService {
 
     private final UsuarioRepository usuarioRepository;
 
-    // Devuelve una lista de los usuarios dto
+    // 1. MÉTODO NUEVO Y CRÍTICO: Buscar por email para el proceso de Login
+    // Retornamos la Entidad completa (incluyendo la contraseña encriptada)
+    // SOLO para que el BFF (o el controlador de autenticación) pueda verificar el inicio de sesión.
+    public Usuario buscarPorEmailParaLogin(String email) {
+        return usuarioRepository.findByEmail(email)
+                .orElseThrow(() -> new RuntimeException("Credenciales incorrectas"));
+        // Usamos un mensaje genérico por seguridad, no decimos "Email no existe"
+    }
+
+    // 2. OPCIONAL: Obtener todos los funcionarios (Solo si tienes un panel de admin)
     public List<UsuarioResponseDTO> obtenerTodos() {
         List<Usuario> usuarios = usuarioRepository.findAll();
-
-        // Transforma la lista de Entidades a una lista de DTOs usando Streams
         return usuarios.stream()
                 .map(this::mapearAResponseDTO)
                 .collect(Collectors.toList());
     }
 
+    // 3. OPCIONAL: Obtener un funcionario específico
     public UsuarioResponseDTO obtenerPorId(Long id) {
         Usuario usuario = usuarioRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
-
+                .orElseThrow(() -> new RuntimeException("Funcionario no encontrado"));
         return mapearAResponseDTO(usuario);
     }
 
-    // Crear un usuario (Recibe RequestDTO, Retorna ResponseDTO)
-    public UsuarioResponseDTO crearUsuario(UsuarioRequestDTO requestDTO) {
+    // ELIMINAMOS crearUsuario:
+    // Como los funcionarios ya están en la base de datos, no necesitamos un endpoint
+    // público para registrarlos. Si necesitas crear nuevos en el futuro,
+    // harías un método exclusivo para administradores.
 
-        if (requestDTO.getRun() == null || requestDTO.getRun().isBlank()) {
-            throw new RuntimeException("El run es obligatorio");
-        }
-
-        if (requestDTO.getRol() == null) {
-            throw new RuntimeException("El rol es obligatorio");
-        }
-
-        // Buscamos si el RUN ya existe en la BD
-        var usuarioExistente = usuarioRepository.findByRun(requestDTO.getRun());
-
-        if (usuarioExistente.isPresent()) {
-            // Si el usuario ya existe, NO lanzamos error.
-            // Simplemente devolvemos el usuario que ya está guardado.
-            return mapearAResponseDTO(usuarioExistente.get());
-        }
-
-        // Si no existe, se creanormalmente
-        Usuario nuevoUsuario = new Usuario();
-        nuevoUsuario.setRun(requestDTO.getRun());
-        nuevoUsuario.setRol(requestDTO.getRol());
-
-        Usuario usuarioGuardado = usuarioRepository.save(nuevoUsuario);
-        return mapearAResponseDTO(usuarioGuardado);
-    }
-
-    // Método auxiliar privado para centralizar el mapeo de Entidad -> DTO
+    // Método auxiliar privado (Nota que el DTO ya no tiene RUN, tiene Email)
     private UsuarioResponseDTO mapearAResponseDTO(Usuario usuario) {
         UsuarioResponseDTO responseDTO = new UsuarioResponseDTO();
         responseDTO.setId(usuario.getId());
-        responseDTO.setRun(usuario.getRun());
+        responseDTO.setEmail(usuario.getEmail());
         responseDTO.setRol(usuario.getRol());
-        return responseDTO;
+        return responseDTO; // ¡La contraseña no viaja en el DTO!
     }
+
+    public UsuarioResponseDTO validarCredenciales(UsuarioRequestDTO requestDTO) {
+        // 1. Buscar al usuario por el email
+        Usuario usuario = usuarioRepository.findByEmail(requestDTO.getEmail())
+                .orElseThrow(() -> new RuntimeException("Credenciales incorrectas"));
+
+        // 2. Comparar la contraseña enviada con la contraseña encriptada en la BD
+        BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
+        if (!encoder.matches(requestDTO.getPassword(), usuario.getPassword())) {
+            throw new RuntimeException("Credenciales incorrectas");
+        }
+
+        // 3. Si todo está correcto, devolvemos el DTO (sin la contraseña)
+        return mapearAResponseDTO(usuario);
+    }
+
 }

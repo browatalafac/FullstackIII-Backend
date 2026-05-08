@@ -17,7 +17,11 @@ public class Usuario {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
 
-    private String run;
+    @Column(unique = true, nullable = false)
+    private String email;
+
+    @Column(nullable = false)
+    private String password; // Aca va la contraseña encriptada
 
     @Enumerated(EnumType.STRING)
     private Roles rol;

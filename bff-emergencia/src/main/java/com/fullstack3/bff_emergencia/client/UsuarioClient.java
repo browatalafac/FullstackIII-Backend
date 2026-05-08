@@ -15,9 +15,8 @@ public interface UsuarioClient {
     @GetMapping("/{id}")
     UsuarioResponseDTO obtenerPorId(@PathVariable("id") Long id);
 
-    @PostMapping
-    UsuarioResponseDTO crearUsuario(@RequestBody UsuarioRequestDTO request);
-
+    @PostMapping("/login")
+    UsuarioResponseDTO login(@RequestBody UsuarioRequestDTO request);
     @GetMapping
     List<UsuarioResponseDTO> getAllUsuarios();
 

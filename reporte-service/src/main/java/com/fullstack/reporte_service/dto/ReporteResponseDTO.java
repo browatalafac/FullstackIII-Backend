@@ -20,7 +20,6 @@ public class ReporteResponseDTO {
     private String descripcion;
     private TipoIncendio tipoIncendio;
     private EstadoReporte estado;
-    private String runCiudadano; // Opcional, para que confirme que quedó a su run
 
     private NivelPrioridad nivelPrioridad;
     private Integer radioImpacto;

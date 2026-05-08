@@ -1,16 +1,13 @@
 package com.fullstack3.bff_emergencia.dto;
 
 import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-@Builder
 @Data
-@NoArgsConstructor
 @AllArgsConstructor
-public class UsuarioRequestDTO {
-    private String email;
-    private String password;
-
+@NoArgsConstructor
+public class AuthResponseDTO {
+    private String token;
+    private UsuarioResponseDTO usuario; // Aquí van el id, email y rol
 }

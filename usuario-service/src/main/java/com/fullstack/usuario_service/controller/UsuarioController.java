@@ -16,6 +16,12 @@ public class UsuarioController {
 
     private final UsuarioService usuarioService;
 
+    @PostMapping("/login")
+    public UsuarioResponseDTO login(@RequestBody UsuarioRequestDTO requestDTO) {
+        // Delegamos la lógica al servicio para que busque por email y compare la contraseña
+        return usuarioService.validarCredenciales(requestDTO);
+    }
+
     @GetMapping
     public List<UsuarioResponseDTO> getAllUsuarios(){
         return usuarioService.obtenerTodos();
@@ -26,9 +32,5 @@ public class UsuarioController {
         return usuarioService.obtenerPorId(id);
     }
 
-    @PostMapping
-    public UsuarioResponseDTO saveUsuario(@RequestBody UsuarioRequestDTO requestDTO){
-        return usuarioService.crearUsuario(requestDTO);
-    }
 
 }

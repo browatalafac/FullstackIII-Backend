@@ -39,14 +39,12 @@ public class Reporte {
     @Enumerated(EnumType.STRING)
     private EstadoReporte estado;
 
-    private Long usuarioId; //no se ocupa, despues ver como quitarlo, por ahora dejarlo
-    private String runCiudadano;
-    private Boolean anonimo;
+    // ELIMINADOS: usuarioId, runCiudadano, anonimo
 
     @Enumerated(EnumType.STRING)
     private NivelPrioridad nivelPrioridad;
 
-    private Integer radioImpacto; //Esta en metros
+    private Integer radioImpacto; // En metros
 
     @Enumerated(EnumType.STRING)
     private EquipoAsignado equipoAsignado;

@@ -5,6 +5,7 @@ import com.fullstack3.bff_emergencia.client.UsuarioClient;
 import com.fullstack3.bff_emergencia.dto.ReporteRequestDTO;
 import com.fullstack3.bff_emergencia.dto.ReporteResponseDTO;
 import com.fullstack3.bff_emergencia.dto.UsuarioRequestDTO;
+import com.fullstack3.bff_emergencia.dto.AuthResponseDTO;
 import com.fullstack3.bff_emergencia.dto.UsuarioResponseDTO;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -13,64 +14,44 @@ import org.springframework.stereotype.Service;
 @Service
 public class EmergenciaOrchestratorService {
 
-    private UsuarioClient usuarioClient;
-    private ReporteClient reporteClient;
+    private final UsuarioClient usuarioClient;
+    private final ReporteClient reporteClient;
+    private final JwtService jwtService; // 🔴 Inyectamos el nuevo servicio
 
+    // 1. CREAR REPORTE (Público y 100% Anónimo)
     public ReporteResponseDTO procesarReporte(ReporteRequestDTO request) {
-
-        if (request.getAnonimo() == null) {
-            throw new RuntimeException("El campo anonimo es obligatorio");
-        }
 
         if (request.getLatitud() == null ||
                 request.getLongitud() == null ||
                 request.getDescripcion() == null ||
                 request.getTipoIncendio() == null) {
-            throw new RuntimeException("Faltan campos obligatorios");
+            throw new RuntimeException("Faltan campos obligatorios para el reporte");
         }
 
-        // 🔵 SI NO ES ANÓNIMO → validas RUN y CREAS EL USUARIO
-        if (!request.getAnonimo()) {
-
-            if (request.getRunCiudadano() == null || request.getRunCiudadano().isBlank()) {
-                throw new RuntimeException("run obligatorio si no es anonimo");
-            }
-
-            // -------- CÓDIGO NUEVO AÑADIDO --------
-            try {
-                // Armamos el DTO para el microservicio de usuarios
-                UsuarioRequestDTO nuevoUsuario = new UsuarioRequestDTO();
-                nuevoUsuario.setRun(request.getRunCiudadano());
-                nuevoUsuario.setRol("CIUDADANO"); // Tu servicio de usuario exige un rol obligatorio
-
-                // Llamamos al método que ya tienes para registrarlo
-                this.registrarUsuario(nuevoUsuario);
-
-            } catch (Exception e) {
-                // Manejo de errores: Si el RUN ya existe en la base de datos,
-                // el microservicio de usuarios podría arrojar un error.
-                // Aquí puedes decidir si frenar el reporte o dejar que continúe.
-                System.out.println("Nota: El usuario ya existe o hubo un error al crearlo - " + e.getMessage());
-            }
-            // --------------------------------------
-
-        } else {
-            request.setRunCiudadano(null);
-        }
-
+        // Ya no hay validaciones de RUN ni creación de usuarios.
+        // Simplemente tomamos los datos geográficos y descriptivos y los enviamos.
         return reporteClient.guardarReporte(request);
     }
 
-    public UsuarioResponseDTO registrarUsuario(UsuarioRequestDTO request) {
-
-        if (request.getRun() == null || request.getRun().isBlank()) {
-            throw new RuntimeException("El run es obligatorio");
+    // 2. LOGIN DE FUNCIONARIO
+    public AuthResponseDTO loginFuncionario(UsuarioRequestDTO request) {
+        if (request.getEmail() == null || request.getEmail().isBlank()) {
+            throw new RuntimeException("El email es obligatorio");
+        }
+        if (request.getPassword() == null || request.getPassword().isBlank()) {
+            throw new RuntimeException("La contraseña es obligatoria");
         }
 
-        if (request.getRol() == null || request.getRol().isBlank()) {
-            throw new RuntimeException("El rol es obligatorio");
-        }
+        // 1. Llamamos al microservicio de usuarios para que valide las credenciales
+        UsuarioResponseDTO usuarioValidado = usuarioClient.login(request);
 
-        return usuarioClient.crearUsuario(request);
+        // 2. Generamos el Token JWT usando el servicio inyectado
+        String token = jwtService.generarToken(
+                usuarioValidado.getEmail(),
+                usuarioValidado.getRol().name() // Asumiendo que Rol es un Enum
+        );
+
+        // 3. Devolvemos el DTO completo con el token y los datos
+        return new AuthResponseDTO(token, usuarioValidado);
     }
 }

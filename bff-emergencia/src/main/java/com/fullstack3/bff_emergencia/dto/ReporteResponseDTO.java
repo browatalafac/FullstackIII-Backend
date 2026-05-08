@@ -23,7 +23,6 @@ public class ReporteResponseDTO {
     private String descripcion;
     private TipoIncendio tipoIncendio;
     private EstadoReporte estadoReporte;
-    private String runCiudadano;
     private NivelPrioridad nivelPrioridad;
     private Integer radioImpacto;
     private EquipoAsignado equipoAsignado;

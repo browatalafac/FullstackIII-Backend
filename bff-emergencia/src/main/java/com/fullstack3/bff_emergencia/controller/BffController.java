@@ -1,9 +1,6 @@
 package com.fullstack3.bff_emergencia.controller;
 
-import com.fullstack3.bff_emergencia.dto.ReporteRequestDTO;
-import com.fullstack3.bff_emergencia.dto.ReporteResponseDTO;
-import com.fullstack3.bff_emergencia.dto.UsuarioRequestDTO;
-import com.fullstack3.bff_emergencia.dto.UsuarioResponseDTO;
+import com.fullstack3.bff_emergencia.dto.*;
 import com.fullstack3.bff_emergencia.service.EmergenciaOrchestratorService;
 import com.fullstack3.bff_emergencia.service.ResilienteClientService;
 import lombok.AllArgsConstructor;
@@ -25,8 +22,8 @@ public class BffController {
         return orchestrator.procesarReporte(request);
     }
 
-    @PostMapping("/usuarios")
-    public UsuarioResponseDTO crearUsuario(@RequestBody UsuarioRequestDTO request) {
-        return orchestrator.registrarUsuario(request);
+    @PostMapping("/login")
+    public AuthResponseDTO login(@RequestBody UsuarioRequestDTO request) {
+        return orchestrator.loginFuncionario(request);
     }
 }

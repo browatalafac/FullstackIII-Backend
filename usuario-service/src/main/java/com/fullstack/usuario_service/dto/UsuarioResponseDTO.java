@@ -10,6 +10,6 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class UsuarioResponseDTO {
     private Long id;
-    private String run;
+    private String email;
     private Roles rol;
 }

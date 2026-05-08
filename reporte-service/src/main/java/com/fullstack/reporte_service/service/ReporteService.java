@@ -20,70 +20,42 @@ import java.util.stream.Collectors;
 public class ReporteService {
 
     private final ReporteRepository reportesRepository;
-
     private final ReporteHandlerFactory factory;
 
-    // Obtener todos los reportes convertidos a DTO
     public List<ReporteResponseDTO> obtenerTodos(){
         List<Reporte> reportes = reportesRepository.findAll();
-
         return reportes.stream()
                 .map(this::mapearAResponseDTO)
                 .collect(Collectors.toList());
     }
 
-    //Obtiene un reporte por su id
     public ReporteResponseDTO obtenerPorId(Long id) {
         Reporte reporte = reportesRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Reporte no encontrado con id: " + id));
-
         return mapearAResponseDTO(reporte);
     }
 
-
-    //Guardar reporte
+    // MÉTODO GUARDAR DRÁSTICAMENTE SIMPLIFICADO
     public ReporteResponseDTO guardarReporte(ReporteRequestDTO requestDTO) {
-        if (requestDTO.getAnonimo() == null) {
-            throw new RuntimeException("El campo anonimo es obligatorio");
-        }
-
-        if (Boolean.TRUE.equals(requestDTO.getAnonimo())) {
-            requestDTO.setUsuarioId(null);
-            requestDTO.setRunCiudadano(null);
-        } else {
-            if (requestDTO.getUsuarioId() == null && (requestDTO.getRunCiudadano() == null || requestDTO.getRunCiudadano().isBlank())) {
-                throw new RuntimeException("Si no es anónimo, debes enviar usuarioId o runCiudadano");
-            }
-        }
-
-
-
 
         Reporte reporte = new Reporte();
         reporte.setLatitud(requestDTO.getLatitud());
         reporte.setLongitud(requestDTO.getLongitud());
         reporte.setDescripcion(requestDTO.getDescripcion());
         reporte.setTipoIncendio(requestDTO.getTipoIncendio());
-        reporte.setUsuarioId(requestDTO.getUsuarioId());
-        reporte.setRunCiudadano(requestDTO.getRunCiudadano());
-        reporte.setAnonimo(requestDTO.getAnonimo());
         reporte.setEstado(EstadoReporte.PENDIENTE);
 
-        // Aca se usa el factory method
+        // Uso del factory method para lógicas especiales (radio, prioridad)
         ReporteHandler handler = factory.getHandler(requestDTO.getTipoIncendio());
         handler.procesarSegunTipo(reporte, requestDTO);
-
 
         Reporte reporteGuardado = reportesRepository.save(reporte);
         return mapearAResponseDTO(reporteGuardado);
     }
 
-
     public ReporteResponseDTO actualizarReporte(Long id, ReporteUpdateDTO updateDTO) {
         Reporte reporte = reportesRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Reporte no encontrado con id: " + id));
-
-        // SOLO actualizar lo permitido
 
         if (updateDTO.getDescripcion() != null && !updateDTO.getDescripcion().isBlank()) {
             reporte.setDescripcion(updateDTO.getDescripcion());
@@ -97,8 +69,6 @@ public class ReporteService {
             reporte.setEstado(updateDTO.getEstado());
         }
 
-
-        // Si el tipo cambió, reprocesar con handler
         ReporteHandler handler = factory.getHandler(reporte.getTipoIncendio());
         handler.procesarSegunTipo(reporte, updateDTO);
 
@@ -106,9 +76,6 @@ public class ReporteService {
         return mapearAResponseDTO(actualizado);
     }
 
-
-
-    // 3. Método auxiliar de mapeo (Entidad -> DTO)
     private ReporteResponseDTO mapearAResponseDTO(Reporte reporte) {
         ReporteResponseDTO responseDTO = new ReporteResponseDTO();
         responseDTO.setId(reporte.getId());
@@ -118,7 +85,8 @@ public class ReporteService {
         responseDTO.setDescripcion(reporte.getDescripcion());
         responseDTO.setTipoIncendio(reporte.getTipoIncendio());
         responseDTO.setEstado(reporte.getEstado());
-        responseDTO.setRunCiudadano(reporte.getRunCiudadano());
+
+        // ELIMINADO: responseDTO.setRunCiudadano(reporte.getRunCiudadano());
 
         responseDTO.setNivelPrioridad(reporte.getNivelPrioridad());
         responseDTO.setRadioImpacto(reporte.getRadioImpacto());

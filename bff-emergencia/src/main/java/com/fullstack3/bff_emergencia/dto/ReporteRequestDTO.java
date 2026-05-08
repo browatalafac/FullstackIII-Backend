@@ -15,8 +15,4 @@ public class ReporteRequestDTO {
     private Double longitud;
     private String descripcion;
     private TipoIncendio tipoIncendio;
-
-    private Long usuarioId;
-    private String runCiudadano;
-    private Boolean anonimo;
 }
