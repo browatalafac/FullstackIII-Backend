@@ -51,7 +51,7 @@ public class Reporte {
     @Enumerated(EnumType.STRING)
     private EquipoAsignado equipoAsignado;
 
-    // 🔴 NUEVO: Se ejecuta automáticamente antes del primer save()
+    // Se ejecuta automáticamente antes del primer save()
     @PrePersist
     public void generarCodigoSeguimiento() {
         if (this.codigoSeguimiento == null) {

@@ -20,24 +20,24 @@ public class DataSeedConfig {
     @Bean
     CommandLineRunner initDatabase() {
         return args -> {
-            // Solo poblamos la base de datos si está vacía
+            // Se pobla la base de datos si está vacía
             if (usuarioRepository.count() == 0) {
                 BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
                 String passwordComun = encoder.encode("innovatech123");
 
-                // 1. Crear Administrador
+                //Crear Administrador
                 Usuario admin = new Usuario();
                 admin.setEmail("admin@innovatech.cl");
                 admin.setPassword(passwordComun);
                 admin.setRol(Roles.ADMINISTRADOR_SISTEMA);
 
-                // 2. Crear Funcionario Municipal
+                //Crear Funcionario Municipal
                 Usuario funcionario = new Usuario();
                 funcionario.setEmail("muni@innovatech.cl");
                 funcionario.setPassword(passwordComun);
                 funcionario.setRol(Roles.FUNCIONARIO_MUNICIPAL);
 
-                // 3. Crear Brigadista
+                //Crear Brigadista
                 Usuario brigadista = new Usuario();
                 brigadista.setEmail("brigada@innovatech.cl");
                 brigadista.setPassword(passwordComun);

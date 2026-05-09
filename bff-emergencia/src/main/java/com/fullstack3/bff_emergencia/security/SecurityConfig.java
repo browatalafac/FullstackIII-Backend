@@ -28,33 +28,33 @@ public class SecurityConfig {
                 .cors(cors -> cors.configurationSource(corsConfigurationSource()))
                 .csrf(csrf -> csrf.disable())
 
-                // Definimos las reglas de autorización de nuestras rutas
+                // Definimos las reglas de autorización de las rutas
                 .authorizeHttpRequests(auth -> auth
-                        // 🟢 RUTAS PÚBLICAS (No piden token)
+                        // Rutas públicas (No piden token)
                         .requestMatchers("/api/bff/emergencias/reportar").permitAll()
                         .requestMatchers("/api/bff/emergencias/login").permitAll()
-                        .requestMatchers("/api/bff/emergencias/seguimiento/**").permitAll() // Por si hiciste el endpoint de seguimiento
+                        .requestMatchers("/api/bff/emergencias/seguimiento/**").permitAll()
 
-                        // 🔴 RUTAS PROTEGIDAS POR ROL
+                        // Rutas protegidas por rol
                         // Cualquier usuario autenticado (Admin, Muni, Brigadista) puede hacer GET para ver la lista
                         .requestMatchers(HttpMethod.GET, "/api/bff/emergencias/reportes").authenticated()
 
-                        // 🔴 SOLO EL BRIGADISTA puede hacer un PUT para editar un reporte
+                        // Solo el brigaditas puede hacer un PUT para editar un reporte, solo el estado por ahora
                         .requestMatchers(HttpMethod.PUT, "/api/bff/emergencias/reportes/**").hasAuthority("BRIGADISTA")
 
-                        // Si después haces un endpoint para crear usuarios, solo el Admin podría
+                        // Desspues se podria crear un endpoint para crear funcionarios, solo el Admin podría
                         // .requestMatchers(HttpMethod.POST, "/api/bff/emergencias/funcionarios").hasAuthority("ADMINISTRADOR_SISTEMA")
                         //Esto aun que no se implemente aun.
 
 
-                        // Cualquier otra ruta que se te olvide, por defecto pedirá token
+                        // Cualquier otra ruta que no esté especificada, por defecto pedirá token
                         .anyRequest().authenticated()
                 )
 
                 // Indicamos que nuestra API es "Stateless" (Sin estado), no guarda sesiones en memoria
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
 
-                // Insertamos nuestro guardia (el filtro JWT) justo antes del filtro de autenticación por defecto de Spring
+                // Insertamos el filtro JWT justo antes del filtro de autenticación por defecto de Spring
                 .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
@@ -63,7 +63,7 @@ public class SecurityConfig {
     @Bean
     CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
-        // Permite tu puerto de React (Agrega el 3000 si usas Create React App en vez de Vite)
+        // Permite el puerto de React
         configuration.setAllowedOrigins(Arrays.asList("http://localhost:5173", "http://localhost:3000"));
         configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS"));
         configuration.setAllowedHeaders(Arrays.asList("Authorization", "Content-Type"));

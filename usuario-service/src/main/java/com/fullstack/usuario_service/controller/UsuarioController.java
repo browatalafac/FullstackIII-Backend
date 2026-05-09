@@ -18,7 +18,6 @@ public class UsuarioController {
 
     @PostMapping("/login")
     public UsuarioResponseDTO login(@RequestBody UsuarioRequestDTO requestDTO) {
-        // Delegamos la lógica al servicio para que busque por email y compare la contraseña
         return usuarioService.validarCredenciales(requestDTO);
     }
 

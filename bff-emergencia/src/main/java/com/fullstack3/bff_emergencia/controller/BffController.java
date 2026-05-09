@@ -41,7 +41,7 @@ public class BffController {
 
     @PostMapping("/funcionarios")
     public UsuarioResponseDTO crearFuncionario(@RequestBody UsuarioRequestDTO request) {
-        // OJO: Más adelante, este endpoint deberá exigir que la petición traiga un JWT válido
+        //Más adelante, este endpoint deberá exigir que la petición traiga un JWT válido
         // en los Headers para asegurar que solo un funcionario activo pueda crear a otro.
         return orchestrator.registrarNuevoFuncionario(request);
     }

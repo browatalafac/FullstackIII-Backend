@@ -18,16 +18,13 @@ public class UsuarioService {
 
     private final UsuarioRepository usuarioRepository;
 
-    // 1. MÉTODO NUEVO Y CRÍTICO: Buscar por email para el proceso de Login
-    // Retornamos la Entidad completa (incluyendo la contraseña encriptada)
-    // SOLO para que el BFF (o el controlador de autenticación) pueda verificar el inicio de sesión.
+    // Solo para que el BFF pueda verificar el inicio de sesión.
     public Usuario buscarPorEmailParaLogin(String email) {
         return usuarioRepository.findByEmail(email)
                 .orElseThrow(() -> new RuntimeException("Credenciales incorrectas"));
-        // Usamos un mensaje genérico por seguridad, no decimos "Email no existe"
     }
 
-    // 2. OPCIONAL: Obtener todos los funcionarios (Solo si tienes un panel de admin)
+    // Opcional, es para obtener todos los funcionarios, aun no se implementa
     public List<UsuarioResponseDTO> obtenerTodos() {
         List<Usuario> usuarios = usuarioRepository.findAll();
         return usuarios.stream()
@@ -35,7 +32,7 @@ public class UsuarioService {
                 .collect(Collectors.toList());
     }
 
-    // 3. OPCIONAL: Obtener un funcionario específico
+    // Opcional, obtener un funcionario específico
     public UsuarioResponseDTO obtenerPorId(Long id) {
         Usuario usuario = usuarioRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Funcionario no encontrado"));
@@ -64,8 +61,6 @@ public class UsuarioService {
         BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
         nuevoFuncionario.setPassword(encoder.encode(requestDTO.getPassword()));
 
-        // Si tu requestDTO tiene un rol, lo usas. Si no, le asignas FUNCIONARIO por defecto.
-        // nuevoFuncionario.setRol(requestDTO.getRol() != null ? requestDTO.getRol() : Roles.FUNCIONARIO);
         nuevoFuncionario.setRol(Roles.ADMINISTRADOR_SISTEMA);
 
         Usuario guardado = usuarioRepository.save(nuevoFuncionario);
@@ -73,10 +68,6 @@ public class UsuarioService {
         return mapearAResponseDTO(guardado);
     }
 
-
-
-
-    // Método auxiliar privado (Nota que el DTO ya no tiene RUN, tiene Email)
     private UsuarioResponseDTO mapearAResponseDTO(Usuario usuario) {
         UsuarioResponseDTO responseDTO = new UsuarioResponseDTO();
         responseDTO.setId(usuario.getId());
@@ -86,17 +77,18 @@ public class UsuarioService {
     }
 
     public UsuarioResponseDTO validarCredenciales(UsuarioRequestDTO requestDTO) {
-        // 1. Buscar al usuario por el email
+
         Usuario usuario = usuarioRepository.findByEmail(requestDTO.getEmail())
                 .orElseThrow(() -> new RuntimeException("Credenciales incorrectas"));
 
-        // 2. Comparar la contraseña enviada con la contraseña encriptada en la BD
+        // Compara la contraseña enviada con la contraseña encriptada en la base de datos
         BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
         if (!encoder.matches(requestDTO.getPassword(), usuario.getPassword())) {
             throw new RuntimeException("Credenciales incorrectas");
         }
 
-        // 3. Si todo está correcto, devolvemos el DTO (sin la contraseña)
+        // Si todo esta correcto, se devuelve el usuario, pero sin la contraseña
+        //Usuario es en realidad un funcionario
         return mapearAResponseDTO(usuario);
     }
 

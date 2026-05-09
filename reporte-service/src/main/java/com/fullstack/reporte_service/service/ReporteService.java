@@ -43,7 +43,6 @@ public class ReporteService {
     }
 
 
-    // MÉTODO GUARDAR DRÁSTICAMENTE SIMPLIFICADO
     public ReporteResponseDTO guardarReporte(ReporteRequestDTO requestDTO) {
 
         Reporte reporte = new Reporte();
