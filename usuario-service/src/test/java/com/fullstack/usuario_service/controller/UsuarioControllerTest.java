@@ -10,8 +10,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -74,6 +73,23 @@ public class UsuarioControllerTest {
         assertEquals(Roles.BRIGADISTA, response.getRol());
 
         verify(usuarioService, times(1)).validarCredenciales(requestBody);
+    }
+    @Test
+    void obtenerUsuario_idNoExiste_lanzaExcepcion() {
+        // ARRANGE
+        Long idInexistente = 99L;
+
+        // Simulamos que el servicio explota al no encontrar el usuario
+        when(usuarioService.obtenerPorId(idInexistente))
+                .thenThrow(new RuntimeException("Funcionario no encontrado"));
+
+        // ACT y ASSERT: Verificamos que el controlador también lance la excepción
+        RuntimeException exception = assertThrows(RuntimeException.class, () -> {
+            usuarioController.obtenerPorId(idInexistente);
+        });
+
+        assertEquals("Funcionario no encontrado", exception.getMessage());
+        verify(usuarioService, times(1)).obtenerPorId(idInexistente);
     }
 
 }
