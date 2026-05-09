@@ -2,6 +2,7 @@ package com.fullstack3.bff_emergencia.client;
 
 import com.fullstack3.bff_emergencia.dto.ReporteRequestDTO;
 import com.fullstack3.bff_emergencia.dto.ReporteResponseDTO;
+import com.fullstack3.bff_emergencia.dto.ReporteUpdateDTO;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.*;
 
@@ -20,5 +21,8 @@ public interface ReporteClient {
 
     @GetMapping
     List<ReporteResponseDTO> getAllReportes();
+
+    @PutMapping("/{id}")
+    ReporteResponseDTO actualizarReporte(@PathVariable("id") Long id, @RequestBody ReporteUpdateDTO updateDTO);
 
 }

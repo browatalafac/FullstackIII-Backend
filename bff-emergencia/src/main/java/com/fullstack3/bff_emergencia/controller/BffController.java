@@ -26,6 +26,14 @@ public class BffController {
         return orchestrator.obtenerTodosLosReportes();
     }
 
+    @PutMapping("/reportes/{id}/estado")
+    public ReporteResponseDTO cambiarEstado(
+            @PathVariable Long id,
+            @RequestBody ReporteUpdateDTO updateDTO) {
+
+        return orchestrator.actualizarEstadoReporte(id, updateDTO);
+    }
+
     @PostMapping("/login")
     public AuthResponseDTO login(@RequestBody UsuarioRequestDTO request) {
         return orchestrator.loginFuncionario(request);
@@ -37,5 +45,7 @@ public class BffController {
         // en los Headers para asegurar que solo un funcionario activo pueda crear a otro.
         return orchestrator.registrarNuevoFuncionario(request);
     }
+
+
 
 }

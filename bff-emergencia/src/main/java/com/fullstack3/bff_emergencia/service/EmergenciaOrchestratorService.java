@@ -2,11 +2,7 @@ package com.fullstack3.bff_emergencia.service;
 
 import com.fullstack3.bff_emergencia.client.ReporteClient;
 import com.fullstack3.bff_emergencia.client.UsuarioClient;
-import com.fullstack3.bff_emergencia.dto.ReporteRequestDTO;
-import com.fullstack3.bff_emergencia.dto.ReporteResponseDTO;
-import com.fullstack3.bff_emergencia.dto.UsuarioRequestDTO;
-import com.fullstack3.bff_emergencia.dto.AuthResponseDTO;
-import com.fullstack3.bff_emergencia.dto.UsuarioResponseDTO;
+import com.fullstack3.bff_emergencia.dto.*;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -18,7 +14,7 @@ public class EmergenciaOrchestratorService {
 
     private final UsuarioClient usuarioClient;
     private final ReporteClient reporteClient;
-    private final JwtService jwtService; // 🔴 Inyectamos el nuevo servicio
+    private final JwtService jwtService;
 
     // 1. CREAR REPORTE (Público y 100% Anónimo)
     public ReporteResponseDTO procesarReporte(ReporteRequestDTO request) {
@@ -66,5 +62,10 @@ public class EmergenciaOrchestratorService {
 
         // 3. Devolvemos el DTO completo con el token y los datos
         return new AuthResponseDTO(token, usuarioValidado);
+    }
+
+    public ReporteResponseDTO actualizarEstadoReporte(Long id, ReporteUpdateDTO updateDTO) {
+        // Podrías agregar validaciones extra aquí si lo deseas
+        return reporteClient.actualizarReporte(id, updateDTO);
     }
 }
