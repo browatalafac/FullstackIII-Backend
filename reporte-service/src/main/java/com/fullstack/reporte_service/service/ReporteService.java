@@ -60,6 +60,7 @@ public class ReporteService {
         return mapearAResponseDTO(reporteGuardado);
     }
 
+
     public ReporteResponseDTO actualizarReporte(Long id, ReporteUpdateDTO updateDTO) {
         Reporte reporte = reportesRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Reporte no encontrado con id: " + id));

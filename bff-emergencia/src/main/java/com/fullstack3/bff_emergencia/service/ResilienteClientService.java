@@ -24,8 +24,7 @@ public class ResilienteClientService {
         // Retornar respuesta por defecto o error adaptada a los nuevos campos
         UsuarioResponseDTO fallbackUsuario = new UsuarioResponseDTO();
         fallbackUsuario.setId(id);
-        fallbackUsuario.setEmail("servicio-offline@bomberos.cl"); // Cambiamos RUN por Email
-        // fallbackUsuario.setRol(Roles.DESCONOCIDO); // Dependiendo de cómo definiste tu enum
+        fallbackUsuario.setEmail("servicio-offline@bomberos.cl");
         return fallbackUsuario;
     }
 

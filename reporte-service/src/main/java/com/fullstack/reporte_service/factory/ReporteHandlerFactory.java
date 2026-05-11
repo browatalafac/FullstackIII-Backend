@@ -15,10 +15,6 @@ public class ReporteHandlerFactory {
     private final Map<TipoIncendio, ReporteHandler> handlers = new HashMap<>();
     private final ReporteHandler defaultHandler;
 
-    /**
-     * Constructor que inicializa el mapa de handlers
-     */
-
     public ReporteHandlerFactory(
             ReporteForestalHandler reporteForestalHandler,
             ReporteUrbanoHandler reporteUrbanoHandler) {

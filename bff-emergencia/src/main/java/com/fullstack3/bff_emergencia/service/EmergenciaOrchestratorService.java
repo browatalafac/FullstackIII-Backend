@@ -39,7 +39,6 @@ public class EmergenciaOrchestratorService {
     }
 
 
-
     // Login Funcionarios
     public AuthResponseDTO loginFuncionario(UsuarioRequestDTO request) {
         if (request.getEmail() == null || request.getEmail().isBlank()) {
@@ -55,7 +54,7 @@ public class EmergenciaOrchestratorService {
         // Se genera el Token JWT usando el servicio inyectado
         String token = jwtService.generarToken(
                 usuarioValidado.getEmail(),
-                usuarioValidado.getRol().name() // Asumiendo que Rol es un Enum
+                usuarioValidado.getRol().name()
         );
 
         // Se devuelve el DTO completo con el token y los datos
@@ -63,7 +62,6 @@ public class EmergenciaOrchestratorService {
     }
 
     public ReporteResponseDTO actualizarEstadoReporte(Long id, ReporteUpdateDTO updateDTO) {
-        // Se podria agregar validaciones extras
         return reporteClient.actualizarReporte(id, updateDTO);
     }
 }
