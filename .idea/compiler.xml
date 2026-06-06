@@ -9,14 +9,18 @@
         <outputRelativeToContentRoot value="true" />
         <module name="bff-emergencia" />
       </profile>
-      <profile name="Annotation profile for usuario-service" enabled="true">
+      <profile name="Annotation profile for riesgo-service" enabled="true">
         <sourceOutputDir name="target/generated-sources/annotations" />
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
         <processorPath useClasspath="false">
           <entry name="$MAVEN_REPOSITORY$/org/projectlombok/lombok/1.18.46/lombok-1.18.46.jar" />
         </processorPath>
+        <module name="riesgo-service" />
         <module name="usuario-service" />
+        <module name="geolocalizacion-service" />
+        <module name="brigadas_recursos-service" />
+        <module name="notificaciones-service" />
         <module name="reporte-service" />
       </profile>
     </annotationProcessing>
@@ -24,7 +28,11 @@
   <component name="JavacSettings">
     <option name="ADDITIONAL_OPTIONS_OVERRIDE">
       <module name="bff-emergencia" options="-parameters" />
+      <module name="brigadas_recursos-service" options="-parameters" />
+      <module name="geolocalizacion-service" options="-parameters" />
+      <module name="notificaciones-service" options="-parameters" />
       <module name="reporte-service" options="-parameters" />
+      <module name="riesgo-service" options="-parameters" />
       <module name="usuario-service" options="-parameters" />
     </option>
   </component>
