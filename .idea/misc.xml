@@ -7,6 +7,10 @@
         <option value="$PROJECT_DIR$/reporte-service/pom.xml" />
         <option value="$PROJECT_DIR$/usuario-service/pom.xml" />
         <option value="$PROJECT_DIR$/bff-emergencia/pom.xml" />
+        <option value="$PROJECT_DIR$/brigadas_recursos-service/pom.xml" />
+        <option value="$PROJECT_DIR$/geolocalizacion-service/pom.xml" />
+        <option value="$PROJECT_DIR$/notificaciones-service/pom.xml" />
+        <option value="$PROJECT_DIR$/riesgo-service/pom.xml" />
       </list>
     </option>
   </component>
