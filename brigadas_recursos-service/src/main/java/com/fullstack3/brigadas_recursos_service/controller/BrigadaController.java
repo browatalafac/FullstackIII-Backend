@@ -1,7 +1,10 @@
 package com.fullstack3.brigadas_recursos_service.controller;
 
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import com.fullstack3.brigadas_recursos_service.dto.BrigadaDTO;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+import java.util.List;
+import java.util.ArrayList;
 
 @RestController
 @RequestMapping("/api/v1/brigadas")
