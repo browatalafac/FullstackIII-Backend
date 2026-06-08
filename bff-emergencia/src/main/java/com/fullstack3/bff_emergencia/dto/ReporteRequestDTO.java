@@ -15,4 +15,5 @@ public class ReporteRequestDTO {
     private Double longitud;
     private String descripcion;
     private TipoIncendio tipoIncendio;
+    private String imagenBase64;
 }

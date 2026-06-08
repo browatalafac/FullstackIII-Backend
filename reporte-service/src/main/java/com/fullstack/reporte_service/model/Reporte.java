@@ -51,6 +51,9 @@ public class Reporte {
     @Enumerated(EnumType.STRING)
     private EquipoAsignado equipoAsignado;
 
+    @Lob
+    private byte[] imagen;
+
     // Se ejecuta automáticamente antes del primer save()
     @PrePersist
     public void generarCodigoSeguimiento() {

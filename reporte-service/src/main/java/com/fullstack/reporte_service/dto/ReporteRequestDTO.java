@@ -14,4 +14,5 @@ public class ReporteRequestDTO implements ReporteBaseDTO {
     private Double longitud;
     private String descripcion;
     private TipoIncendio tipoIncendio;
+    private String imagenBase64;
 }

@@ -12,6 +12,7 @@ import com.fullstack.reporte_service.repository.ReporteRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.Base64;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -35,13 +36,11 @@ public class ReporteService {
         return mapearAResponseDTO(reporte);
     }
 
-
     public ReporteResponseDTO obtenerPorCodigo(String codigo) {
         Reporte reporte = reportesRepository.findByCodigoSeguimiento(codigo)
                 .orElseThrow(() -> new RuntimeException("No se encontró ningún reporte con ese código."));
         return mapearAResponseDTO(reporte);
     }
-
 
     public ReporteResponseDTO guardarReporte(ReporteRequestDTO requestDTO) {
 
@@ -52,14 +51,29 @@ public class ReporteService {
         reporte.setTipoIncendio(requestDTO.getTipoIncendio());
         reporte.setEstado(EstadoReporte.PENDIENTE);
 
-        // Uso del factory method para lógicas especiales (radio, prioridad)
+        // --- LÓGICA DE IMAGEN ---
+        if (requestDTO.getImagenBase64() != null && !requestDTO.getImagenBase64().isBlank()) {
+            try {
+                // Si el frontend envía el prefijo (ej. "data:image/png;base64,..."), lo limpiamos
+                String base64Data = requestDTO.getImagenBase64();
+                if (base64Data.contains(",")) {
+                    base64Data = base64Data.split(",")[1];
+                }
+                // Decodificamos de String a byte[]
+                byte[] decodedBytes = Base64.getDecoder().decode(base64Data);
+                reporte.setImagen(decodedBytes);
+            } catch (IllegalArgumentException e) {
+                throw new RuntimeException("Error al procesar la imagen enviada.");
+            }
+        }
+
+        // Uso del factory method
         ReporteHandler handler = factory.getHandler(requestDTO.getTipoIncendio());
         handler.procesarSegunTipo(reporte, requestDTO);
 
         Reporte reporteGuardado = reportesRepository.save(reporte);
         return mapearAResponseDTO(reporteGuardado);
     }
-
 
     public ReporteResponseDTO actualizarReporte(Long id, ReporteUpdateDTO updateDTO) {
         Reporte reporte = reportesRepository.findById(id)
@@ -94,10 +108,17 @@ public class ReporteService {
         responseDTO.setDescripcion(reporte.getDescripcion());
         responseDTO.setTipoIncendio(reporte.getTipoIncendio());
         responseDTO.setEstado(reporte.getEstado());
-
         responseDTO.setNivelPrioridad(reporte.getNivelPrioridad());
         responseDTO.setRadioImpacto(reporte.getRadioImpacto());
         responseDTO.setEquipoAsignado(reporte.getEquipoAsignado());
+
+        // --- LÓGICA DE IMAGEN ---
+        if (reporte.getImagen() != null) {
+            // Convertimos de byte[] a String Base64 para enviarlo al frontend
+            String encodedString = Base64.getEncoder().encodeToString(reporte.getImagen());
+            // Le agregamos el prefijo para que el frontend pueda renderizarlo directamente en una etiqueta <img>
+            responseDTO.setImagenBase64("data:image/jpeg;base64," + encodedString);
+        }
 
         return responseDTO;
     }

@@ -25,4 +25,5 @@ public class ReporteResponseDTO {
     private NivelPrioridad nivelPrioridad;
     private Integer radioImpacto;
     private EquipoAsignado equipoAsignado;
+    private String imagenBase64;
 }
