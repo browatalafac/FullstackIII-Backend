@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 
 import java.util.List;
 
-@FeignClient(name = "usuario-service", url = "http://localhost:8080/api/v1/usuarios")
+@FeignClient(name = "usuario-service", url = "http://localhost:1016/api/v1/usuarios")
 public interface UsuarioClient {
     @GetMapping("/{id}")
     UsuarioResponseDTO obtenerPorId(@PathVariable("id") Long id);

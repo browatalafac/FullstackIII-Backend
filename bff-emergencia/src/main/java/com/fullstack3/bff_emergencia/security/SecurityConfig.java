@@ -31,6 +31,7 @@ public class SecurityConfig {
                 // Definimos las reglas de autorización de las rutas
                 .authorizeHttpRequests(auth -> auth
                         // Rutas públicas (No piden token)
+                        .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
                         .requestMatchers("/api/bff/emergencias/reportar").permitAll()
                         .requestMatchers("/api/bff/emergencias/login").permitAll()
                         .requestMatchers("/api/bff/emergencias/seguimiento/**").permitAll()
@@ -64,7 +65,7 @@ public class SecurityConfig {
     CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
         // Permite el puerto de React
-        configuration.setAllowedOrigins(Arrays.asList("http://localhost:5173", "http://localhost:3000"));
+        configuration.setAllowedOriginPatterns(Arrays.asList("*"));
         configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS"));
         configuration.setAllowedHeaders(Arrays.asList("Authorization", "Content-Type"));
 

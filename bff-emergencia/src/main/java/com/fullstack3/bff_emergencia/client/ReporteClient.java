@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-@FeignClient(name = "reporte-service", url = "http://localhost:8081/api/v1/reportes")
+@FeignClient(name = "reporte-service", url = "http://localhost:1014/api/v1/reportes")
 public interface ReporteClient {
     @PostMapping
     ReporteResponseDTO guardarReporte(@RequestBody ReporteRequestDTO request);

@@ -6,7 +6,7 @@ import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 
-@FeignClient(name = "riesgo-service", url = "http://localhost:8081/api/v1/riesgos")
+@FeignClient(name = "riesgo-service", url = "http://localhost:1015/api/v1/riesgos")
 public interface RiesgoClient {
     @GetMapping("/api/v1/riesgos/zona-evacuacion/{reporteId}")
     ZonaRiesgoDTO obtenerZonaEvacuacion(@PathVariable("reporteId") Long reporteId);

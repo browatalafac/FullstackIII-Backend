@@ -11,6 +11,7 @@ import java.util.List;
 @AllArgsConstructor
 @RestController
 @RequestMapping("/api/bff/emergencias")
+@CrossOrigin("*")
 public class BffController {
 
     private final EmergenciaOrchestratorService orchestrator;

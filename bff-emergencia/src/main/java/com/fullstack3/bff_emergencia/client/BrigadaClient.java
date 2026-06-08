@@ -4,8 +4,8 @@ import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
-@FeignClient(name = "brigada-service", url = "http://localhost:8081/api/v1/brigadas")
+@FeignClient(name = "brigada-service", url = "http://localhost:1011/api/v1/brigadas")
 public interface BrigadaClient {
-    @PostMapping("/api/v1/brigadas/asignar")
+    @PostMapping("/asignar")
     String asignarBrigada(@RequestParam("reporteId") Long reporteId, @RequestParam("tipoEquipo") String tipoEquipo);
 }
