@@ -1,5 +1,6 @@
 package com.fullstack3.notificaciones_service.controller;
 
+import com.fullstack3.notificaciones_service.dto.AlertaDTO;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;

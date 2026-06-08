@@ -3,6 +3,7 @@ package com.fullstack3.bff_emergencia.service;
 import com.fullstack3.bff_emergencia.client.ReporteClient;
 import com.fullstack3.bff_emergencia.client.UsuarioClient;
 import com.fullstack3.bff_emergencia.dto.*;
+import com.fullstack3.bff_emergencia.enums.NivelPrioridad;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -16,7 +17,10 @@ public class EmergenciaOrchestratorService {
     private final ReporteClient reporteClient;
     private final JwtService jwtService;
 
-    // Crear reporte
+    // Inyectamos el servicio resiliente que maneja todas las llamadas a los nuevos microservicios
+    private final ResilienteClientService resilienteService;
+
+    // Crear reporte con orquestación completa
     public ReporteResponseDTO procesarReporte(ReporteRequestDTO request) {
 
         if (request.getLatitud() == null ||
@@ -26,18 +30,58 @@ public class EmergenciaOrchestratorService {
             throw new RuntimeException("Faltan campos obligatorios para el reporte");
         }
 
-        return reporteClient.guardarReporte(request);
+        // 1. Validar Geolocalización (Llamada al geo-service)
+        CoordenadaDTO coordenadas = new CoordenadaDTO(request.getLatitud(), request.getLongitud());
+        Boolean esValido = resilienteService.validarCoordenadas(coordenadas);
+        if (Boolean.FALSE.equals(esValido)) {
+            throw new RuntimeException("Las coordenadas proporcionadas no son válidas");
+        }
+
+        // 2. Guardar el reporte (Llamada al reporte-service)
+        ReporteResponseDTO reporteGuardado = reporteClient.guardarReporte(request);
+
+        // 3. Sistema de Alertas (Llamada al notificaciones-service)
+        AlertaDTO alerta = new AlertaDTO(
+                reporteGuardado.getId(),
+                "Nuevo incendio detectado: " + reporteGuardado.getTipoIncendio(),
+                reporteGuardado.getNivelPrioridad().name(),
+                "TODOS"
+        );
+        resilienteService.enviarAlertaSegura(alerta);
+
+        // 4. Asignación automática de Brigadas (Llamada al brigada-service)
+        // Solo si la prioridad calculada por el Handler fue ALTA
+        if (NivelPrioridad.ALTA.equals(reporteGuardado.getNivelPrioridad()) && reporteGuardado.getEquipoAsignado() != null) {
+            resilienteService.asignarBrigadaSegura(reporteGuardado.getId(), reporteGuardado.getEquipoAsignado().name());
+        }
+
+        return reporteGuardado;
+    }
+
+    // NUEVO: Método para empaquetar el reporte junto con los polígonos y rutas del mapa
+    public ReporteDetalleDTO obtenerDetalleCompleto(Long reporteId) {
+        // Obtenemos los datos base
+        ReporteResponseDTO reporte = reporteClient.getById(reporteId);
+
+        // Obtenemos los datos geoespaciales (Llamadas al riesgo-service)
+        ZonaRiesgoDTO zona = resilienteService.obtenerZonaEvacuacion(reporteId);
+        RutaDTO ruta = resilienteService.obtenerRutaSegura(reporteId);
+
+        // Empaquetamos todo en el DTO final
+        return new ReporteDetalleDTO(reporte, zona, ruta);
     }
 
     public List<ReporteResponseDTO> obtenerTodosLosReportes() {
         return reporteClient.getAllReportes();
     }
 
-    public UsuarioResponseDTO registrarNuevoFuncionario(UsuarioRequestDTO request) {
-        // Aquí se podria agregar lógica extra de validación en el BFF, mas adelante
-        return usuarioClient.crearFuncionarioAdmin(request);
+    public ReporteResponseDTO actualizarEstadoReporte(Long id, ReporteUpdateDTO updateDTO) {
+        return reporteClient.actualizarReporte(id, updateDTO);
     }
 
+    public UsuarioResponseDTO registrarNuevoFuncionario(UsuarioRequestDTO request) {
+        return usuarioClient.crearFuncionarioAdmin(request);
+    }
 
     // Login Funcionarios
     public AuthResponseDTO loginFuncionario(UsuarioRequestDTO request) {
@@ -57,11 +101,6 @@ public class EmergenciaOrchestratorService {
                 usuarioValidado.getRol().name()
         );
 
-        // Se devuelve el DTO completo con el token y los datos
         return new AuthResponseDTO(token, usuarioValidado);
-    }
-
-    public ReporteResponseDTO actualizarEstadoReporte(Long id, ReporteUpdateDTO updateDTO) {
-        return reporteClient.actualizarReporte(id, updateDTO);
     }
 }

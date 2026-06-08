@@ -13,8 +13,7 @@ import java.util.List;
 @RequestMapping("/api/bff/emergencias")
 public class BffController {
 
-    private EmergenciaOrchestratorService orchestrator; //Ponerlo final cuando los controladres, con sus servicios esten listos
-    private final ResilienteClientService resilienteService;
+    private final EmergenciaOrchestratorService orchestrator;
 
     @PostMapping("/reportar")
     public ReporteResponseDTO crearReporte(@RequestBody ReporteRequestDTO request) {
@@ -24,6 +23,11 @@ public class BffController {
     @GetMapping("/reportes")
     public List<ReporteResponseDTO> verTodosLosReportes() {
         return orchestrator.obtenerTodosLosReportes();
+    }
+
+    @GetMapping("/reportes/{id}/detalle")
+    public ReporteDetalleDTO verDetalleReporteCompleto(@PathVariable Long id) {
+        return orchestrator.obtenerDetalleCompleto(id);
     }
 
     @PutMapping("/reportes/{id}/estado")
@@ -41,11 +45,9 @@ public class BffController {
 
     @PostMapping("/funcionarios")
     public UsuarioResponseDTO crearFuncionario(@RequestBody UsuarioRequestDTO request) {
-        //Más adelante, este endpoint deberá exigir que la petición traiga un JWT válido
+        // Más adelante, este endpoint deberá exigir que la petición traiga un JWT válido
         // en los Headers para asegurar que solo un funcionario activo pueda crear a otro.
         return orchestrator.registrarNuevoFuncionario(request);
     }
-
-
 
 }
