@@ -63,11 +63,18 @@ public class EmergenciaOrchestratorService {
         // Obtenemos los datos base
         ReporteResponseDTO reporte = reporteClient.getById(reporteId);
 
-        // Obtenemos los datos geoespaciales (Llamadas al riesgo-service)
-        ZonaRiesgoDTO zona = resilienteService.obtenerZonaEvacuacion(reporteId);
-        RutaDTO ruta = resilienteService.obtenerRutaSegura(reporteId);
+        // Validar que el reporte tenga coordenadas
+        if (reporte.getLatitud() == null || reporte.getLongitud() == null) {
+            throw new RuntimeException("El reporte no tiene coordenadas válidas");
+        }
 
-        // Empaquetamos todo en el DTO final
+        double lat = reporte.getLatitud();
+        double lng = reporte.getLongitud();
+
+        // Obtenemos los datos geoespaciales usando la ubicación real del reporte
+        ZonaRiesgoDTO zona = resilienteService.obtenerZonaEvacuacion(reporteId, lat, lng);
+        RutaDTO ruta = resilienteService.obtenerRutaSegura(reporteId, lat, lng);
+
         return new ReporteDetalleDTO(reporte, zona, ruta);
     }
 

@@ -1,9 +1,11 @@
 package com.fullstack3.bff_emergencia.controller;
 
+import com.fullstack3.bff_emergencia.client.RiesgoClient;
 import com.fullstack3.bff_emergencia.dto.*;
 import com.fullstack3.bff_emergencia.service.EmergenciaOrchestratorService;
 import com.fullstack3.bff_emergencia.service.ResilienteClientService;
 import lombok.AllArgsConstructor;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -15,6 +17,7 @@ import java.util.List;
 public class BffController {
 
     private final EmergenciaOrchestratorService orchestrator;
+    private final RiesgoClient riesgoClient;
 
     @PostMapping("/reportar")
     public ReporteResponseDTO crearReporte(@RequestBody ReporteRequestDTO request) {
@@ -35,7 +38,6 @@ public class BffController {
     public ReporteResponseDTO cambiarEstado(
             @PathVariable Long id,
             @RequestBody ReporteUpdateDTO updateDTO) {
-
         return orchestrator.actualizarEstadoReporte(id, updateDTO);
     }
 
@@ -46,9 +48,25 @@ public class BffController {
 
     @PostMapping("/funcionarios")
     public UsuarioResponseDTO crearFuncionario(@RequestBody UsuarioRequestDTO request) {
-        // Más adelante, este endpoint deberá exigir que la petición traiga un JWT válido
-        // en los Headers para asegurar que solo un funcionario activo pueda crear a otro.
         return orchestrator.registrarNuevoFuncionario(request);
+    }
+
+    @GetMapping("/riesgos/{reporteId}/zona-evacuacion")
+    public ResponseEntity<ZonaRiesgoDTO> obtenerZonaEvacuacion(
+            @PathVariable Long reporteId,
+            @RequestParam double lat,
+            @RequestParam double lng) {
+
+        return ResponseEntity.ok(riesgoClient.obtenerZonaEvacuacion(reporteId, lat, lng));
+    }
+
+    @GetMapping("/riesgos/{reporteId}/ruta-segura")
+    public ResponseEntity<RutaDTO> obtenerRutaSegura(
+            @PathVariable Long reporteId,
+            @RequestParam double lat,
+            @RequestParam double lng) {
+
+        return ResponseEntity.ok(riesgoClient.obtenerRutaSegura(reporteId, lat, lng));
     }
 
 }

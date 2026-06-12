@@ -25,8 +25,7 @@ public class ResilienteClientService {
         return usuarioClient.obtenerPorId(id);
     }
 
-    public UsuarioResponseDTO fallbackObtenerUsuario(Long id, Exception ex) {
-        // Retornar respuesta por defecto o error adaptada a los nuevos campos
+    public UsuarioResponseDTO fallbackObtenerUsuario(Long id, Throwable ex) {
         UsuarioResponseDTO fallbackUsuario = new UsuarioResponseDTO();
         fallbackUsuario.setId(id);
         fallbackUsuario.setEmail("servicio-offline@bomberos.cl");
@@ -38,21 +37,19 @@ public class ResilienteClientService {
         return reporteClient.getById(id);
     }
 
-    public ReporteResponseDTO fallbackObtenerReporte(Long id, Exception ex) {
+    public ReporteResponseDTO fallbackObtenerReporte(Long id, Throwable ex) {
         return ReporteResponseDTO.builder()
                 .id(id)
                 .descripcion("Servicio de reportes no disponible")
                 .build();
     }
 
-    // --- NUEVOS MÉTODOS RESILIENTES ---
-
     @CircuitBreaker(name = "geo-service", fallbackMethod = "fallbackValidarCoordenadas")
-    public Boolean validarCoordenadas(CoordenadaDTO coordenadas) { // <-- SOLO Boolean
+    public Boolean validarCoordenadas(CoordenadaDTO coordenadas) {
         return geoClient.validarCoordenadas(coordenadas);
     }
 
-    public Boolean fallbackValidarCoordenadas(CoordenadaDTO coordenadas, Exception ex) { // <-- SOLO Boolean
+    public Boolean fallbackValidarCoordenadas(CoordenadaDTO coordenadas, Throwable ex) {
         System.err.println("Servicio de geolocalización caído. Asumiendo coordenadas válidas por emergencia.");
         return true;
     }
@@ -62,26 +59,25 @@ public class ResilienteClientService {
         notificacionClient.enviarAlerta(alertaDTO);
     }
 
-    public void fallbackEnviarAlerta(AlertaDTO alertaDTO, Exception ex) {
+    public void fallbackEnviarAlerta(AlertaDTO alertaDTO, Throwable ex) {
         System.err.println("No se pudo enviar alerta al servicio de notificaciones para el reporte: " + alertaDTO.getReporteId());
     }
 
     @CircuitBreaker(name = "riesgo-service", fallbackMethod = "fallbackObtenerZona")
-    public ZonaRiesgoDTO obtenerZonaEvacuacion(Long reporteId) {
-        return riesgoClient.obtenerZonaEvacuacion(reporteId);
+    public ZonaRiesgoDTO obtenerZonaEvacuacion(Long reporteId, double lat, double lng) {
+        return riesgoClient.obtenerZonaEvacuacion(reporteId, lat, lng);
     }
 
-    public ZonaRiesgoDTO fallbackObtenerZona(Long reporteId, Exception ex) {
-        // Devolvemos un objeto vacío para que el frontend no falle al intentar leer el mapa
+    public ZonaRiesgoDTO fallbackObtenerZona(Long reporteId, double lat, double lng, Throwable ex) {
         return new ZonaRiesgoDTO(reporteId, "Servicio de riesgos no disponible", new ArrayList<>());
     }
 
     @CircuitBreaker(name = "riesgo-service", fallbackMethod = "fallbackObtenerRuta")
-    public RutaDTO obtenerRutaSegura(Long reporteId) {
-        return riesgoClient.obtenerRutaSegura(reporteId);
+    public RutaDTO obtenerRutaSegura(Long reporteId, double lat, double lng) {
+        return riesgoClient.obtenerRutaSegura(reporteId, lat, lng);
     }
 
-    public RutaDTO fallbackObtenerRuta(Long reporteId, Exception ex) {
+    public RutaDTO fallbackObtenerRuta(Long reporteId, double lat, double lng, Throwable ex) {
         return new RutaDTO(reporteId, "Ruta no disponible temporalmente", new ArrayList<>());
     }
 
@@ -90,7 +86,7 @@ public class ResilienteClientService {
         brigadaClient.asignarBrigada(reporteId, tipoEquipo);
     }
 
-    public void fallbackAsignarBrigada(Long reporteId, String tipoEquipo, Exception ex) {
+    public void fallbackAsignarBrigada(Long reporteId, String tipoEquipo, Throwable ex) {
         System.err.println("No se pudo asignar brigada automáticamente al reporte: " + reporteId);
     }
 }
