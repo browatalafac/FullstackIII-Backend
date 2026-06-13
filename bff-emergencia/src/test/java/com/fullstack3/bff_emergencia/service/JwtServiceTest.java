@@ -9,6 +9,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 @ExtendWith(MockitoExtension.class)
 public class JwtServiceTest {
+
     // Aquí usamos @InjectMocks directo porque JwtService no depende de repositorios externos
     @InjectMocks
     private JwtService jwtService;

@@ -23,7 +23,10 @@ public class GeoController {
 
     private boolean validar(Double latitud, Double longitud) {
         if (latitud == null || longitud == null) return false;
-        return (latitud >= -90 && latitud <= 90) && (longitud >= -180 && longitud <= 180);
+        boolean latValida = latitud >= -56.5 && latitud <= -17.5;
+        boolean lngValida = longitud >= -75.6 && longitud <= -66.0;
+
+        return latValida && lngValida;
     }
 
 }

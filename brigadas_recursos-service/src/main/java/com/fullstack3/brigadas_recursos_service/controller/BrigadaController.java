@@ -19,9 +19,7 @@ public class BrigadaController {
     }
 
     @PostMapping("/asignar")
-    public ResponseEntity<String> asignarBrigada(
-            @RequestParam Long reporteId,
-            @RequestParam String tipoEquipo) {
+    public ResponseEntity<String> asignarBrigada(@RequestParam Long reporteId, @RequestParam String tipoEquipo) {
 
         // Lógica: Buscar una brigada de 'tipoEquipo' (ej. BOMBEROS_FORESTALES)
         // que esté disponible, cambiar su estado a OCUPADO y vincularla al reporteId.
