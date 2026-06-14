@@ -1,5 +1,6 @@
 package com.fullstack3.bff_emergencia.controller;
 
+import com.fullstack3.bff_emergencia.client.ReporteClient;
 import com.fullstack3.bff_emergencia.client.RiesgoClient;
 import com.fullstack3.bff_emergencia.dto.*;
 import com.fullstack3.bff_emergencia.service.EmergenciaOrchestratorService;
@@ -18,6 +19,7 @@ public class BffController {
 
     private final EmergenciaOrchestratorService orchestrator;
     private final RiesgoClient riesgoClient;
+    private final ReporteClient reporteClient;
 
     @PostMapping("/reportar")
     public ReporteResponseDTO crearReporte(@RequestBody ReporteRequestDTO request) {
@@ -67,6 +69,12 @@ public class BffController {
             @RequestParam double lng) {
 
         return ResponseEntity.ok(riesgoClient.obtenerRutaSegura(reporteId, lat, lng));
+    }
+
+    @GetMapping("/reportes/seguimiento/{codigo}")
+    public ReporteResponseDTO obtenerReportePorCodigo(
+            @PathVariable String codigo) {
+        return reporteClient.getByCodigo(codigo);
     }
 
 }

@@ -54,10 +54,10 @@ public class ResilienteClientService {
         // Si el servicio respondió con 4xx → las coordenadas son inválidas, NO es emergencia
         if (ex instanceof feign.FeignException feignEx && feignEx.status() >= 400 && feignEx.status() < 500) {
             System.err.println("Coordenadas rechazadas por el geo-service: " + ex.getMessage());
-            return false; // ← rechaza el reporte correctamente
+            return false; //rechaza el reporte
         }
 
-        // Solo si el servicio está genuinamente caído (sin conexión) → modo emergencia
+        // Solo si el servicio está realmente caido caído es cuando se activa el modo "emergencia"
         System.err.println("Servicio de geolocalización caído. Asumiendo coordenadas válidas por emergencia.");
         return true;
     }
