@@ -50,6 +50,14 @@ public class ResilienteClientService {
     }
 
     public Boolean fallbackValidarCoordenadas(CoordenadaDTO coordenadas, Throwable ex) {
+
+        // Si el servicio respondió con 4xx → las coordenadas son inválidas, NO es emergencia
+        if (ex instanceof feign.FeignException feignEx && feignEx.status() >= 400 && feignEx.status() < 500) {
+            System.err.println("Coordenadas rechazadas por el geo-service: " + ex.getMessage());
+            return false; // ← rechaza el reporte correctamente
+        }
+
+        // Solo si el servicio está genuinamente caído (sin conexión) → modo emergencia
         System.err.println("Servicio de geolocalización caído. Asumiendo coordenadas válidas por emergencia.");
         return true;
     }
