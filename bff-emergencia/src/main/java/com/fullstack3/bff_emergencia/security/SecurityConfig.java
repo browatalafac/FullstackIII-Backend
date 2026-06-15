@@ -34,7 +34,7 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
                         .requestMatchers("/api/bff/emergencias/reportar").permitAll()
                         .requestMatchers("/api/bff/emergencias/login").permitAll()
-                        .requestMatchers("/api/bff/emergencias/seguimiento/**").permitAll()
+                        .requestMatchers("/api/bff/emergencias/reportes/seguimiento/**").permitAll()
 
                         // Rutas protegidas por rol
                         // Cualquier usuario autenticado (Admin, Muni, Brigadista) puede hacer GET para ver la lista
