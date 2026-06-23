@@ -1,29 +1,26 @@
 package com.fullstack3.brigadas_recursos_service.controller;
 
 import com.fullstack3.brigadas_recursos_service.dto.BrigadaDTO;
+import com.fullstack3.brigadas_recursos_service.service.BrigadaService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import java.util.List;
-import java.util.ArrayList;
 
 @RestController
 @RequestMapping("/api/v1/brigadas")
+@RequiredArgsConstructor
 public class BrigadaController {
-    // Simulación de base de datos para la PoC
-    private List<BrigadaDTO> brigadas = new ArrayList<>();
 
-    @GetMapping("/activas")
-    public List<BrigadaDTO> obtenerBrigadasActivas() {
-        // Retornaría brigadas con estado DISPONIBLE
-        return brigadas;
-    }
+    private final BrigadaService brigadaService;
 
     @PostMapping("/asignar")
     public ResponseEntity<String> asignarBrigada(@RequestParam Long reporteId, @RequestParam String tipoEquipo) {
-
-        // Lógica: Buscar una brigada de 'tipoEquipo' (ej. BOMBEROS_FORESTALES)
-        // que esté disponible, cambiar su estado a OCUPADO y vincularla al reporteId.
-
-        return ResponseEntity.ok("Brigada asignada al reporte: " + reporteId);
+        try {
+            String resultado = brigadaService.asignarMejorBrigada(reporteId, tipoEquipo);
+            return ResponseEntity.ok(resultado);
+        } catch (Exception e) {
+            // Devuelve 503 Service Unavailable si no hay nadie
+            return ResponseEntity.status(503).body(e.getMessage());
+        }
     }
 }
