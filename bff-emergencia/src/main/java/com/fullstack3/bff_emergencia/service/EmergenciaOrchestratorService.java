@@ -50,8 +50,9 @@ public class EmergenciaOrchestratorService {
         resilienteService.enviarAlertaSegura(alerta);
 
         // 4. Asignación automática de Brigadas (Llamada al brigada-service)
-        // Solo si la prioridad calculada por el Handler fue ALTA
-        if (NivelPrioridad.ALTA.equals(reporteGuardado.getNivelPrioridad()) && reporteGuardado.getEquipoAsignado() != null) {
+        // 🟢 MODIFICACIÓN: Se elimina el filtro estricto de NivelPrioridad.ALTA
+        // para permitir el despacho automático en incendios urbanos (MEDIA) u otros tipos.
+        if (reporteGuardado.getEquipoAsignado() != null) {
             resilienteService.asignarBrigadaSegura(reporteGuardado.getId(), reporteGuardado.getEquipoAsignado().name());
         }
 

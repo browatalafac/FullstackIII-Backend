@@ -1,5 +1,8 @@
 package com.fullstack3.bff_emergencia.enums;
 
+import lombok.Getter;
+
+@Getter
 public enum EquipoAsignado {
     BOMBEROS_FORESTALES("Bomberos Forestales"),
     BOMBEROS_URBANOS("Bomberos Urbanos"),
@@ -13,7 +16,4 @@ public enum EquipoAsignado {
         this.descripcion = descripcion;
     }
 
-    public String getDescripcion() {
-        return descripcion;
-    }
 }
