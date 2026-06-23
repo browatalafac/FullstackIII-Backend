@@ -39,7 +39,7 @@ public class DataSeedConfig {
 
                 //Crear Brigadista
                 Usuario brigadista = new Usuario();
-                brigadista.setEmail("brigada@innovatech.cl");
+                brigadista.setEmail("uli.torres@duocuc.cl");
                 brigadista.setPassword(passwordComun);
                 brigadista.setRol(Roles.BRIGADISTA);
 
