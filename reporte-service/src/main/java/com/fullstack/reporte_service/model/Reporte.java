@@ -54,7 +54,7 @@ public class Reporte {
     @Lob
     private byte[] imagen;
 
-    // Se ejecuta automáticamente antes del primer save()
+    //se ejecuta automáticamente antes del primer save
     @PrePersist
     public void generarCodigoSeguimiento() {
         if (this.codigoSeguimiento == null) {

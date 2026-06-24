@@ -13,7 +13,6 @@ import org.springframework.stereotype.Component;
 public class ReporteForestalHandler implements ReporteHandler {
     @Override
     public void procesarSegunTipo(Reporte reporte, ReporteBaseDTO dto) {
-        // Lógica específica para incendios forestales
         reporte.setNivelPrioridad(NivelPrioridad.ALTA);
         reporte.setRadioImpacto(5000); // 5km de radio
         reporte.setEquipoAsignado(EquipoAsignado.BOMBEROS_FORESTALES);

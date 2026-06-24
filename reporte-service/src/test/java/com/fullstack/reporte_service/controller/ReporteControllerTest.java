@@ -25,7 +25,7 @@ public class ReporteControllerTest {
 
     @Test
     void obtenerReporte_retorna_ok(){
-        // ARRANGE
+        //ARRANGE
         Long idBuscado = 1L;
         ReporteResponseDTO mockResponse = new ReporteResponseDTO();
         mockResponse.setId(idBuscado);
@@ -33,17 +33,17 @@ public class ReporteControllerTest {
 
         when(reporteService.obtenerPorId(idBuscado)).thenReturn(mockResponse);
 
-        // ACT
+        //ACT
         ReporteResponseDTO response = reporteController.getById(idBuscado);
 
-        // ASSERT
+        //ASSERT
         assertNotNull(response);
         assertEquals("Incendio de prueba", response.getDescripcion());
         verify(reporteService, times(1)).obtenerPorId(idBuscado);
         }
     @Test
     void actualizarEstado_RetornaReporteActualizado() {
-        // ARRANGE
+        //ARRANGE
         Long idActualizar = 1L;
         ReporteUpdateDTO updateDTO = new ReporteUpdateDTO();
         updateDTO.setEstado(EstadoReporte.APAGADO);
@@ -54,10 +54,10 @@ public class ReporteControllerTest {
 
         when(reporteService.actualizarReporte(idActualizar, updateDTO)).thenReturn(mockResponse);
 
-        // ACT
+        //ACT
         ReporteResponseDTO response = reporteController.actualizarReporte(idActualizar, updateDTO);
 
-        // ASSERT
+        //ASSERT
         assertNotNull(response);
         assertEquals(EstadoReporte.APAGADO, response.getEstado());
         verify(reporteService, times(1)).actualizarReporte(idActualizar, updateDTO);

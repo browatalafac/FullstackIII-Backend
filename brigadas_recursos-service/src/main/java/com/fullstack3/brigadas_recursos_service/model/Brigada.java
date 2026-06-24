@@ -12,6 +12,6 @@ public class Brigada {
     private Long id;
 
     private String nombre;
-    private String tipoEquipo; // Ej: BOMBEROS_FORESTALES, BOMBEROS_URBANOS, MIXTO
-    private String estado;     // Ej: DISPONIBLE, EN_RUTA, OCUPADO
+    private String tipoEquipo;
+    private String estado;
 }

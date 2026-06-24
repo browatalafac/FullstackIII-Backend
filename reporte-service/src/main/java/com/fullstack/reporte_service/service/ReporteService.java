@@ -51,15 +51,13 @@ public class ReporteService {
         reporte.setTipoIncendio(requestDTO.getTipoIncendio());
         reporte.setEstado(EstadoReporte.PENDIENTE);
 
-        // --- LÓGICA DE IMAGEN ---
         if (requestDTO.getImagenBase64() != null && !requestDTO.getImagenBase64().isBlank()) {
             try {
-                // Si el frontend envía el prefijo (ej. "data:image/png;base64,..."), lo limpiamos
                 String base64Data = requestDTO.getImagenBase64();
                 if (base64Data.contains(",")) {
                     base64Data = base64Data.split(",")[1];
                 }
-                // Decodificamos de String a byte[]
+                //esta linea es importante, porque se decodifica de String a byte
                 byte[] decodedBytes = Base64.getDecoder().decode(base64Data);
                 reporte.setImagen(decodedBytes);
             } catch (IllegalArgumentException e) {
@@ -67,10 +65,8 @@ public class ReporteService {
             }
         }
 
-        // Uso del factory method
         ReporteHandler handler = factory.getHandler(requestDTO.getTipoIncendio());
         handler.procesarSegunTipo(reporte, requestDTO);
-
         Reporte reporteGuardado = reportesRepository.save(reporte);
         return mapearAResponseDTO(reporteGuardado);
     }
@@ -112,11 +108,9 @@ public class ReporteService {
         responseDTO.setRadioImpacto(reporte.getRadioImpacto());
         responseDTO.setEquipoAsignado(reporte.getEquipoAsignado());
 
-        // --- LÓGICA DE IMAGEN ---
         if (reporte.getImagen() != null) {
-            // Convertimos de byte[] a String Base64 para enviarlo al frontend
+            //aca convertimos de byte[] a String Base64 para enviarlo al frontend
             String encodedString = Base64.getEncoder().encodeToString(reporte.getImagen());
-            // Le agregamos el prefijo para que el frontend pueda renderizarlo directamente en una etiqueta <img>
             responseDTO.setImagenBase64("data:image/jpeg;base64," + encodedString);
         }
 

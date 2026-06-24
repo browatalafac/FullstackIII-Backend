@@ -16,18 +16,14 @@ import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.*;
 
 public class NotificacionesControllerTest {
-
-    // Creamos un mocl del EmailService. No enviará correos reales.
     @Mock
     private EmailService emailServiceMock;
 
-    // Inyectamos automáticamente el mock anterior dentro del controlador
     @InjectMocks
     private NotificacionController notificacionController;
 
     @BeforeEach
     void setUp() {
-        // Inicializamos los mocks antes de cada test
         MockitoAnnotations.openMocks(this);
     }
 
@@ -41,7 +37,6 @@ public class NotificacionesControllerTest {
                 "TODOS"
         );
 
-        // Simulamos que el método enviarCorreo no hace nada (void), solo queremos que pase sin errores
         doNothing().when(emailServiceMock).enviarCorreo(anyString(), anyString(), anyString());
 
         // ACT
@@ -51,8 +46,6 @@ public class NotificacionesControllerTest {
         assertNotNull(response, "La respuesta no debería ser nula");
         assertEquals(HttpStatus.OK, response.getStatusCode(), "El código de estado debe ser 200 OK");
         assertEquals("Notificación enviada por correo exitosamente", response.getBody(), "El mensaje del cuerpo debe coincidir");
-
-        // VERIFY: Aseguramos que el controlador realmente llamó a nuestro servicio simulado
         verify(emailServiceMock, times(1)).enviarCorreo(anyString(), anyString(), anyString());
     }
 
@@ -60,8 +53,6 @@ public class NotificacionesControllerTest {
     void enviarAlerta_RetornaError500SiElServicioFalla() {
         // ARRANGE
         AlertaDTO alertaMock = new AlertaDTO(101L, "Test", "ALTA", "TODOS");
-
-        // Simulamos que el EmailService lanza una excepción, como que emailstrap esta caido
         doThrow(new RuntimeException("Error simulado de red")).when(emailServiceMock).enviarCorreo(anyString(), anyString(), anyString());
 
         // ACT

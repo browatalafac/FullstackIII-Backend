@@ -14,7 +14,7 @@ public class BrigadaService {
 
     public String asignarMejorBrigada(Long reporteId, String tipoDeseado) {
 
-        // 1. Intentamos buscar la brigada exacta que pide el orquestador
+        //aca se intenta buscar la brigada exacta que pide el orquestador
         Optional<Brigada> brigadaIdeal = repository.findFirstByTipoEquipoAndEstado(tipoDeseado, "DISPONIBLE");
 
         if (brigadaIdeal.isPresent()) {
@@ -24,7 +24,7 @@ public class BrigadaService {
             return "ÉXITO: Se asignó la brigada especializada '" + asignada.getNombre() + "' al reporte " + reporteId;
         }
 
-        // 2. Si no hay de las exactas, buscamos una de apoyo general (MIXTO)
+        //si no se encuentra la brigada exacta, buscamos una de apoyo general (o mixto)
         Optional<Brigada> brigadaMixta = repository.findFirstByTipoEquipoAndEstado("MIXTO", "DISPONIBLE");
 
         if (brigadaMixta.isPresent()) {
@@ -34,7 +34,7 @@ public class BrigadaService {
             return "ADVERTENCIA: Sin equipos " + tipoDeseado + ". Se envió brigada de apoyo '" + asignada.getNombre() + "' al reporte " + reporteId;
         }
 
-        // 3. Si todo el mundo está ocupado
+        //si está todo ocupado
         throw new RuntimeException("CRÍTICO: No hay ninguna brigada disponible (ni especializada ni mixta) para el reporte " + reporteId);
     }
 }
