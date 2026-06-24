@@ -10,6 +10,6 @@ import lombok.NoArgsConstructor;
 public class AlertaDTO {
     private Long reporteId;
     private String mensaje;
-    private String prioridad; // ALTA, MEDIA, BAJA
-    private String destinatarioRol; // FUNCIONARIO, COMUNIDAD, BRIGADA
+    private String prioridad;
+    private String destinatarioRol;
 }

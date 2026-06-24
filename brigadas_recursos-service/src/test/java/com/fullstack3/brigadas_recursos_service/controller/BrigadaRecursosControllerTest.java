@@ -20,17 +20,14 @@ import static org.mockito.Mockito.when;
 
 public class BrigadaRecursosControllerTest {
 
-    // 1. Creamos un "doble" del servicio usando Mockito
     @Mock
     private BrigadaService brigadaServiceMock;
 
-    // 2. Inyectamos ese doble dentro de nuestro controlador real
     @InjectMocks
     private BrigadaController brigadaController;
 
     @BeforeEach
     void setUp() {
-        // Inicializamos los mocks antes de cada test
         MockitoAnnotations.openMocks(this);
     }
 
@@ -39,11 +36,8 @@ public class BrigadaRecursosControllerTest {
         // ARRANGE
         Long reporteId = 105L;
         String tipoEquipo = "BOMBEROS_FORESTALES";
-
-        // Lo que esperamos que el servicio responda (ya sea el tipo "MIXTO" o un mensaje largo)
         String respuestaEsperada = "BOMBEROS_FORESTALES";
 
-        // Simulamos el comportamiento del servicio: cuando lo llamen, debe retornar la respuesta esperada
         when(brigadaServiceMock.asignarMejorBrigada(anyLong(), anyString())).thenReturn(respuestaEsperada);
 
         // ACT
@@ -62,7 +56,6 @@ public class BrigadaRecursosControllerTest {
         String tipoEquipo = "BOMBEROS_FORESTALES";
         String mensajeError = "CRÍTICO: No hay ninguna brigada disponible";
 
-        // Simulamos el peor escenario: el servicio lanza un RuntimeException porque nadie está disponible
         when(brigadaServiceMock.asignarMejorBrigada(anyLong(), anyString())).thenThrow(new RuntimeException(mensajeError));
 
         // ACT

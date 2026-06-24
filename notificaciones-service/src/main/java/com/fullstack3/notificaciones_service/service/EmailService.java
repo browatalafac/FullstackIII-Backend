@@ -14,7 +14,7 @@ public class EmailService {
     public void enviarCorreo(String destinatario, String asunto, String cuerpo) {
         SimpleMailMessage mensaje = new SimpleMailMessage();
 
-        // Cambiamos el correo de Gmail por el sistema oficial (inventado)
+        //aca cambiamos el correo de gmail por el sistema oficial (q inventamos)
         mensaje.setFrom("alertas-automaticas@valledelsol.cl");
         mensaje.setTo(destinatario);
         mensaje.setSubject(asunto);

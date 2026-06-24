@@ -11,5 +11,5 @@ import java.util.List;
 public class RutaDTO {
     private Long reporteId;
     private String descripcion;
-    private List<CoordenadaDTO> puntosRuta; // Lista de puntos para formar la línea
+    private List<CoordenadaDTO> puntosRuta;
 }

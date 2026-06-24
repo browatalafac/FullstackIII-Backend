@@ -19,18 +19,15 @@ public class NotificacionController {
     @PostMapping("/enviar")
     public ResponseEntity<String> enviarAlerta(@RequestBody AlertaDTO alertaDTO) {
 
-        // 1. Decidir a quién le enviamos el correo basado en el rol.
-        // Para pruebas, puedes usar tu propio correo secundario.
+        //decide a quién le enviamos el correo segun en el rol
         String correoDestino = "bomberos.valledelsol@yopmail.com";
 
         if (alertaDTO.getDestinatarioRol().equals("COMUNIDAD")) {
             correoDestino = "comunidad.valledelsol@yopmail.com";
         }
 
-        // 2. Armar el Asunto
         String asunto = "ALERTA " + alertaDTO.getPrioridad() + " - Reporte #" + alertaDTO.getReporteId();
 
-        // 3. Armar el Cuerpo del Mensaje
         String cuerpo = "SISTEMA DE ALERTAS MUNICIPALIDAD VALLE DEL SOL\n" +
                 "---------------------------------------------------\n\n" +
                 "Se ha detectado una nueva emergencia que requiere atención:\n\n" +
@@ -40,7 +37,7 @@ public class NotificacionController {
                 "Por favor, revise el panel de control inmediatamente."+"\n"+
                 "http://localhost:5173/login";
 
-        // 4. Enviar el correo
+        //envia el correo
         try {
             emailService.enviarCorreo(correoDestino, asunto, cuerpo);
             return ResponseEntity.ok("Notificación enviada por correo exitosamente");

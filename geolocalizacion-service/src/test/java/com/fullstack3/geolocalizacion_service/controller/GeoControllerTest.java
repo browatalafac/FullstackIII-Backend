@@ -20,7 +20,6 @@ public class GeoControllerTest {
     @Test
     void validarCoordenadas_CoordenadasValidas_RetornaTrueY200Ok() {
         // ARRANGE
-        // Coordenadas válidas dentro de Chile (Ejemplo: Melipilla / Alhué)
         CoordenadasDTO requestValido = new CoordenadasDTO(-33.6891, -71.2146);
 
         // ACT
@@ -35,7 +34,6 @@ public class GeoControllerTest {
     @Test
     void validarCoordenadas_LatitudInvalida_RetornaFalseY400BadRequest() {
         // ARRANGE
-        // Latitud fuera del rango de Chile (Ejemplo: -10.0, que caería en Perú/Brasil)
         CoordenadasDTO requestInvalido = new CoordenadasDTO(-10.0, -70.0);
 
         // ACT
@@ -50,7 +48,6 @@ public class GeoControllerTest {
     @Test
     void validarCoordenadas_LongitudInvalida_RetornaFalseY400BadRequest() {
         // ARRANGE
-        // Longitud fuera del rango de Chile (Ej: -60.0, que caería en Argentina)
         CoordenadasDTO requestInvalido = new CoordenadasDTO(-33.0, -60.0);
 
         // ACT
@@ -65,7 +62,6 @@ public class GeoControllerTest {
     @Test
     void validarCoordenadas_ValoresNulos_RetornaFalseY400BadRequest() {
         // ARRANGE
-        // El frontend manda un DTO vacío o con datos corruptos
         CoordenadasDTO requestNulo = new CoordenadasDTO(null, null);
 
         // ACT

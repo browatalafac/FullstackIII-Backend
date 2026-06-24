@@ -25,38 +25,24 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
             throws ServletException, IOException {
 
-        // Obtener el header Authorization
         final String authHeader = request.getHeader("Authorization");
         final String jwt;
         final String userEmail;
 
-        // Si no hay header o no empieza con "Bearer ", lo dejamos pasar.
-        // Si es una ruta protegida, Spring Security lo bloqueará más adelante por no tener contexto.
         if (authHeader == null || !authHeader.startsWith("Bearer ")) {
             filterChain.doFilter(request, response);
             return;
         }
 
-        // Extraer el token (quitando la palabra "Bearer ")
         jwt = authHeader.substring(7);
 
         try {
             userEmail = jwtService.extraerEmail(jwt);
 
-            // Si extrajimos el email y el usuario aún no está autenticado en este hilo
             if (userEmail != null && SecurityContextHolder.getContext().getAuthentication() == null) {
-
-                // Verificamos si el token es válido matemáticamente y no ha expirado
                 if (jwtService.validarToken(jwt)) {
-                    // Creamos el objeto de autenticación de Spring Security
-
-                    // Extraemos el rol del token usando wl metodo de jwtService (extraelRol)
                     String rol = jwtService.extraerRol(jwt);
-
-                    // Convertimos ese rol en una Autoridad que Spring Security entiende
                     var authorities = Collections.singletonList(new SimpleGrantedAuthority(rol));
-
-                    // Pasamos la variable authorities en lugar de la lista vacía
                     UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(
                             userEmail,
                             null,
@@ -64,15 +50,11 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                     );
                     authToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
 
-                    // Guardamos la autenticación en el contexto de seguridad
                     SecurityContextHolder.getContext().setAuthentication(authToken);
                 }
             }
         } catch (Exception e) {
-            // Si el token es malicioso o expirado, fallará en silencio y no establecerá la autenticación
         }
-
-        //Continuar con la cadena de filtros
         filterChain.doFilter(request, response);
     }
 }

@@ -21,7 +21,7 @@ public class Usuario {
     private String email;
 
     @Column(nullable = false)
-    private String password; // Aca va la contrasena encriptada
+    private String password;
 
     @Enumerated(EnumType.STRING)
     private Roles rol;

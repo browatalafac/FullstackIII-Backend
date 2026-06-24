@@ -10,6 +10,6 @@ import lombok.NoArgsConstructor;
 public class BrigadaDTO {
     private Long id;
     private String nombre;
-    private String tipoEquipo; // Ej: BOMBEROS_FORESTALES
-    private String estado; // DISPONIBLE, EN_RUTA, OCUPADO
+    private String tipoEquipo;
+    private String estado;
 }

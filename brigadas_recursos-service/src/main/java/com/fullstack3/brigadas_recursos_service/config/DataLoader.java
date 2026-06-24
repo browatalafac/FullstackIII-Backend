@@ -13,33 +13,32 @@ public class DataLoader {
         return args -> {
             if (repository.count() == 0) {
 
-                // 1. Generar 4 Brigadas Forestales
+                //genera 4 Brigadas FORESTALESSS
                 for (int i = 1; i <= 4; i++) {
                     Brigada b = new Brigada();
                     b.setNombre("Conaf - Brigada Forestal " + i);
-                    b.setTipoEquipo("BOMBEROS_FORESTALES"); // OJO: Debe coincidir con tu Enum
+                    b.setTipoEquipo("BOMBEROS_FORESTALES");
                     b.setEstado("DISPONIBLE");
                     repository.save(b);
                 }
 
-                // 2. Generar 4 Brigadas Urbanas
+                //generar 4 Brigadas URBANASSS
                 for (int i = 1; i <= 4; i++) {
                     Brigada b = new Brigada();
                     b.setNombre("Bomberos - Compañía Urbana " + i);
-                    b.setTipoEquipo("BOMBEROS_URBANOS"); // OJO: Debe coincidir con tu Enum
+                    b.setTipoEquipo("BOMBEROS_URBANOS");
                     b.setEstado("DISPONIBLE");
                     repository.save(b);
                 }
 
-                // 3. Generar 4 Brigadas Mixtas (Comodín)
+                //genera 4 Brigadas mixtas
                 for (int i = 1; i <= 4; i++) {
                     Brigada b = new Brigada();
                     b.setNombre("Rescate Mixto - Unidad " + i);
-                    b.setTipoEquipo("MIXTO"); // OJO: Debe coincidir con tu Enum
+                    b.setTipoEquipo("MIXTO");
                     b.setEstado("DISPONIBLE");
                     repository.save(b);
                 }
-
                 System.out.println("Datos de Brigadas inicializados: 12 unidades operativas (4 de cada tipo).");
             }
         };

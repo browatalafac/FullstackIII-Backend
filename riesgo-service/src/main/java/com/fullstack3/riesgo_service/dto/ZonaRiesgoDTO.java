@@ -11,5 +11,5 @@ import java.util.List;
 public class ZonaRiesgoDTO {
     private Long reporteId;
     private String nivelAlerta;
-    private List<CoordenadaDTO> perimetro; // Lista de puntos para formar el polígono
+    private List<CoordenadaDTO> perimetro;
 }
