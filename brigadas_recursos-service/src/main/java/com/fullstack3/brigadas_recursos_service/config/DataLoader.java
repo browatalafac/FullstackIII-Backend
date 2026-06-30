@@ -13,7 +13,7 @@ public class DataLoader {
         return args -> {
             if (repository.count() == 0) {
 
-                //genera 4 Brigadas FORESTALESSS
+                //Genera 4 Brigadas forestales
                 for (int i = 1; i <= 4; i++) {
                     Brigada b = new Brigada();
                     b.setNombre("Conaf - Brigada Forestal " + i);
@@ -22,7 +22,7 @@ public class DataLoader {
                     repository.save(b);
                 }
 
-                //generar 4 Brigadas URBANASSS
+                //Genera 4 Brigadas urbanas
                 for (int i = 1; i <= 4; i++) {
                     Brigada b = new Brigada();
                     b.setNombre("Bomberos - Compañía Urbana " + i);
@@ -31,7 +31,7 @@ public class DataLoader {
                     repository.save(b);
                 }
 
-                //genera 4 Brigadas mixtas
+                //Genera 4 Brigadas mixtas
                 for (int i = 1; i <= 4; i++) {
                     Brigada b = new Brigada();
                     b.setNombre("Rescate Mixto - Unidad " + i);
